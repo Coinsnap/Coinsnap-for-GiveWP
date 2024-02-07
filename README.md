@@ -1,0 +1,1 @@
+# Coinsnap-for-GiveWP
