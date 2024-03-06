@@ -15,12 +15,6 @@ use Give\Framework\PaymentGateways\Exceptions\PaymentGatewayException;
 use Give\Framework\PaymentGateways\PaymentGateway;
 use Give\Framework\Http\Response\Types\RedirectResponse;
 
-define( 'SERVER_PHP_VERSION', '7.4' );
-define( 'COINSNAP_VERSION', '1.0.0' );
-define( 'COINSNAP_REFERRAL_CODE', '' );
-define( 'COINSNAP_PLUGIN_ID', 'coinsnap-for-givewp' );
-define( 'COINSNAP_SERVER_URL', 'https://app.coinsnap.io' );
-
 require_once(dirname(__FILE__) . "/library/autoload.php");
 
 class CoinsnapGivewpClass extends PaymentGateway

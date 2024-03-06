@@ -18,6 +18,12 @@
  * Network:         true
  */
 
+define( 'SERVER_PHP_VERSION', '7.4' );
+define( 'COINSNAP_VERSION', '1.0.0' );
+define( 'COINSNAP_REFERRAL_CODE', 'D19825' );
+define( 'COINSNAP_PLUGIN_ID', 'coinsnap-for-givewp' );
+define( 'COINSNAP_SERVER_URL', 'https://app.coinsnap.io' );
+
 // Register the gateways 
 add_action('givewp_register_payment_gateway', static function ($paymentGatewayRegister) {
     include 'class-coinsnap-gateway.php';    
