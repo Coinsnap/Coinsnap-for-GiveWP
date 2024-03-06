@@ -1,7 +1,6 @@
-# Coinsnap-for-GiveWP
+# Coinsnap for GiveWP payment plugin #
 ![Image of Coinsnap for GiveWP](https://coinsnap.io/wp-content/uploads/2024/02/Coinsnap-for-GiveWP.png)
-
-## Coinsnap for GiveWp Wordpress Plugin
+## Accept Bitcoin and Lightning Payments with GiveWP Wordpress Plugin ##
 Are you collecting donations or fundraising on your website with GiveWP? Then offer your donors the opportunity to donate with Bitcoin and Lightning.
 
 GiveWP is a WordPress plugin that enables non-profit organizations and websites to collect donations. GiveWP provides a user-friendly interface to create donation forms, track fundraising campaigns and integrate various payment gateways to accept payments.
