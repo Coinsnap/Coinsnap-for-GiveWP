@@ -1,4 +1,4 @@
-=== Coinsnap Bitcoin + Lightning payment plug-in 1.0.0 ===
+=== Coinsnap Bitcoin + Lightning payment plug-in 1.0.0 for GiveWP ===
 Contributors: coinsnap
 Tags: Lightning, SATS, bitcoin, GiveWP, payment gateway
 Requires at least: 5.2
@@ -44,6 +44,11 @@ After the Coinsnap GiveWP add-on is installed and activated, a notice appears th
 
 ### 1.3. Deposit Coinsnap data ###
 
+* Navigate to Donations > Settings > Payment Gateways and select coinsnap
+* Enter Store ID and API Key
+* Click Save changes
+* Navigate to Donations > Settings > Payment Gateways > Gateways >  coinsnap > Click Enabled 
+
 If you don’t have a Coinsnap account yet, you can do so via the link shown: Coinsnap Registration
 
 ### 2. Create Coinsnap account ####
@@ -77,7 +82,10 @@ https://coinsnap.io/lightning-wallet-mit-lightning-adresse/
 
 ### 3.1. GiveWP Coinsnap Settings ###
 
-### 3.2. Payment settings ###
+* Navigate to Donations > Settings > Payment Gateways and select coinsnap
+* Enter Store ID and API Key
+* Click Save changes
+* Navigate to Donations > Settings > Payment Gateways > Gateways >  coinsnap > Click Enabled 
 
 ### 4. Test payment ###
 
