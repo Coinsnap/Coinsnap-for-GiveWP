@@ -15,10 +15,9 @@ use Give\Framework\PaymentGateways\Exceptions\PaymentGatewayException;
 use Give\Framework\PaymentGateways\PaymentGateway;
 use Give\Framework\Http\Response\Types\RedirectResponse;
 
-require_once(dirname(__FILE__) . "/library/autoload.php");
+require_once(dirname(__FILE__) . "/library/loader.php");
 
-class CoinsnapGivewpClass extends PaymentGateway
-{
+class CoinsnapGivewpClass extends PaymentGateway {
 	/*
 * @inheritDoc
 */
@@ -39,7 +38,7 @@ class CoinsnapGivewpClass extends PaymentGateway
 	}
 	function admin_payment_gateway_sections($sections)
 	{
-		$sections['coinsnap'] = __('Coinsnap', 'give-coinsnap');
+		$sections['coinsnap'] = __('Coinsnap', 'coinsnap-for-givewp');
 
 		return $sections;
 	}
@@ -59,45 +58,45 @@ class CoinsnapGivewpClass extends PaymentGateway
 
                 $settings[] = array(
                     'id'   => 'coinsnap_store_id',
-                    'name' => __( 'Store ID', 'give-coinsnap' ),
-                    'desc' => __( 'Enter Store ID', 'give-coinsnap' ),
+                    'name' => __( 'Store ID', 'coinsnap-for-givewp' ),
+                    'desc' => __( 'Enter Store ID', 'coinsnap-for-givewp' ),
                     'type' => 'text',
                 );
 
                 $settings[] = array(
                     'id'   => 'coinsnap_api_key',
-                    'name' => __( 'API Key', 'give-coinsnap' ),
-                    'desc' => __( 'Enter API Key', 'give-coinsnap' ),
+                    'name' => __( 'API Key', 'coinsnap-for-givewp' ),
+                    'desc' => __( 'Enter API Key', 'coinsnap-for-givewp' ),
                     'type' => 'text',
                 );
                 $settings[] = array(
                     'id'   => 'coinsnap_expired_status',
-                    'name' => __( 'Expired Status', 'give-coinsnap' ),
-                    'desc' => __( 'Select Expired Status', 'give-coinsnap' ),
+                    'name' => __( 'Expired Status', 'coinsnap-for-givewp' ),
+                    'desc' => __( 'Select Expired Status', 'coinsnap-for-givewp' ),
                     'type'        => 'select',
                     'default'         => 'cancelled',
                     'options'     => $statuses,
                 );
                 $settings[] = array(
                     'id'   => 'coinsnap_settled_status',
-                    'name' => __( 'Settled Status', 'give-coinsnap' ),
-                    'desc' => __( 'Select Settled Status', 'give-coinsnap' ),
+                    'name' => __( 'Settled Status', 'coinsnap-for-givewp' ),
+                    'desc' => __( 'Select Settled Status', 'coinsnap-for-givewp' ),
                     'type'        => 'select',
                     'default'         => 'publish',
                     'options'     => $statuses,
                 );
                 $settings[] = array(
                     'id'   => 'coinsnap_processing_status',
-                    'name' => __( 'Processing Status', 'give-coinsnap' ),
-                    'desc' => __( 'Select Processing Status', 'give-coinsnap' ),
+                    'name' => __( 'Processing Status', 'coinsnap-for-givewp' ),
+                    'desc' => __( 'Select Processing Status', 'coinsnap-for-givewp' ),
                     'type'        => 'select',
                     'default'         => 'processing',
                     'options'     => $statuses,
                 );				
                 $settings[] = array(
                     'id'   => 'coinsnap_desc',
-                    'name' => __( 'Payment Description', 'give-coinsnap' ),
-                    'desc' => __( 'Enter Payment Description', 'give-coinsnap' ),
+                    'name' => __( 'Payment Description', 'coinsnap-for-givewp' ),
+                    'desc' => __( 'Enter Payment Description', 'coinsnap-for-givewp' ),
                     'default'  => "You will be taken away to Bitcoin + Lightning to complete the donation!",
                     'type' => 'text',
                 );
@@ -126,7 +125,7 @@ class CoinsnapGivewpClass extends PaymentGateway
 	 */
 	public function getName(): string
 	{
-		return __('Coinsnap', 'give-coinsnap');
+		return __('Coinsnap', 'coinsnap-for-givewp');
 	}
 
 	/**
@@ -134,7 +133,7 @@ class CoinsnapGivewpClass extends PaymentGateway
 	 */
 	public function getPaymentMethodLabel(): string
 	{
-		return __('Bitcoin + Lightning', 'give-coinsnap');
+		return __('Bitcoin + Lightning', 'coinsnap-for-givewp');
 	}
 
 	/**
@@ -158,7 +157,7 @@ class CoinsnapGivewpClass extends PaymentGateway
 				
         if (! $this->webhookExists($this->getStoreId(), $this->getApiKey(), $webhook_url)){
             if (! $this->registerWebhook($this->getStoreId(), $this->getApiKey(),$webhook_url)) {                
-                throw new PaymentGatewayException(__('unable to set Webhook url.', 'give-coinsnap'));
+                throw new PaymentGatewayException(esc_html('Unable to set Webhook url.', 'coinsnap-for-givewp'));
                 exit;
             }
          }      
@@ -212,9 +211,9 @@ class CoinsnapGivewpClass extends PaymentGateway
 		return new PaymentRefunded();
 	}
 
-    public function give_process_webhook() {
+    public function give_process_webhook(){
 				
-        if ( ! isset( $_GET['give-listener'] ) || $_GET['give-listener'] !== 'coinsnap' ) {
+        if ( null !== ( filter_input(INPUT_GET,'give-listener') ) || filter_input(INPUT_GET,'give-listener') !== 'coinsnap' ) {
             return;
         }
         
