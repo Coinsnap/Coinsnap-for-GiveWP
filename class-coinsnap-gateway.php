@@ -213,7 +213,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
 
     public function give_process_webhook(){
 				
-        if ( null !== ( filter_input(INPUT_GET,'give-listener') ) || filter_input(INPUT_GET,'give-listener') !== 'coinsnap' ) {
+        if ( null === ( filter_input(INPUT_GET,'give-listener') ) || filter_input(INPUT_GET,'give-listener') !== 'coinsnap' ) {
             return;
         }
         
