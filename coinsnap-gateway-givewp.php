@@ -9,7 +9,7 @@
  * Domain Path:     /languages
  * Version:         1.0.0
  * Requires PHP:    7.4
- * Tested up to:    6.6.1
+ * Tested up to:    6.6.2
  * Requires at least: 5.2
  * GiveWP tested up to: 3.16.0
  * License:         GPL2
