@@ -106,7 +106,7 @@ After successful installation, click Activate and then you can start setting up 
 
 ### 1.1. Add plugin ###
 
-![Plugin downloading from Github repository](https://github.com/Coinsnap/Coinsnap-for-GiveWP/blob/main/assets/images/3.png)
+![Plugin downloading from Github repository](https://github.com/Coinsnap/Coinsnap-for-GiveWP/blob/main/assets/images/3.jpg)
 
 If you don’t want to install add-on directly via plugin, you can download Coinsnap GiveWP add-on from Coinsnap Github page or from WordPress directory and install it via “Upload Plugin” function:
 
