@@ -1,4 +1,7 @@
 <?php
+if (!defined( 'ABSPATH' )){
+    exit;
+}
 use Give\Donations\Models\Donation;
 use Give\Donations\Models\DonationNote;
 use Give\Donations\ValueObjects\DonationStatus;
@@ -18,9 +21,9 @@ use Give\Framework\Http\Response\Types\RedirectResponse;
 require_once(dirname(__FILE__) . "/library/loader.php");
 
 class CoinsnapGivewpClass extends PaymentGateway {
-	/*
-* @inheritDoc
-*/
+    /*
+    * @inheritDoc
+    */
     public const WEBHOOK_EVENTS = ['New','Expired','Settled','Processing'];	 
 
 	public function __construct(SubscriptionModule $subscriptionModule = null)
@@ -115,35 +118,31 @@ class CoinsnapGivewpClass extends PaymentGateway {
 	/**
 	 * @inheritDoc
 	 */
-	public function getId(): string
-	{
+	public function getId(): string	{
 		return self::id();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function getName(): string
-	{
+	public function getName(): string {
 		return __('Coinsnap', 'coinsnap-for-givewp');
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function getPaymentMethodLabel(): string
-	{
-		return __('Bitcoin + Lightning', 'coinsnap-for-givewp');
+	public function getPaymentMethodLabel(): string	{
+            return __('Bitcoin + Lightning', 'coinsnap-for-givewp');
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function getLegacyFormFieldMarkup(int $formId, array $args): string
-	{		
-        return "<div class='coinsnap-givewp-help-text'>
-            <p>".give_get_option( 'coinsnap_desc')."</p>
-        </div>";
+	public function getLegacyFormFieldMarkup(int $formId, array $args): string {		
+            return "<div class='coinsnap-givewp-help-text'>
+                <p>".give_get_option( 'coinsnap_desc')."</p>
+            </div>";
 	}
 
 	/**

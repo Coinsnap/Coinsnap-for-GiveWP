@@ -11,14 +11,16 @@
  * Requires PHP:    7.4
  * Tested up to:    6.6.1
  * Requires at least: 5.2
- * GiveWP tested up to: 3.15.0
+ * GiveWP tested up to: 3.16.0
  * License:         GPL2
  * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  *
  * Network:         true
  */
 
-if (!defined( 'ABSPATH' )) exit;
+if (!defined( 'ABSPATH' )){
+    exit;
+}
 
 define( 'SERVER_PHP_VERSION', '7.4' );
 define( 'COINSNAP_VERSION', '1.0.0' );
