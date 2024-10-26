@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name:     Coinsnap for GiveWP
+ * Plugin Name:     Coinsnap add-on for GiveWP 
  * Plugin URI:      https://www.coinsnap.io
  * Description:     Provides a <a href="https://coinsnap.io">Coinsnap</a>  - Bitcoin + Lightning Payment Gateway for <a href="https://givewp.com/">Givewp</a>.
  * Author:          Coinsnap
@@ -9,9 +9,9 @@
  * Domain Path:     /languages
  * Version:         1.0.0
  * Requires PHP:    7.4
+ * Requires at least: 6.0
  * Tested up to:    6.6.2
- * Requires at least: 5.2
- * GiveWP tested up to: 3.16.0
+ * GiveWP tested up to: 3.17.1
  * License:         GPL2
  * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -22,11 +22,11 @@ if (!defined( 'ABSPATH' )){
     exit;
 }
 
-define( 'SERVER_PHP_VERSION', '7.4' );
-define( 'COINSNAP_VERSION', '1.0.0' );
-define( 'COINSNAP_REFERRAL_CODE', 'D19825' );
-define( 'COINSNAP_PLUGIN_ID', 'coinsnap-for-givewp' );
-define( 'COINSNAP_SERVER_URL', 'https://app.coinsnap.io' );
+if(!defined('SERVER_PHP_VERSION')){ define( 'SERVER_PHP_VERSION', '7.4' );}
+if(!defined('COINSNAP_VERSION')){ define( 'COINSNAP_VERSION', '1.0.0' );}
+if(!defined('COINSNAP_REFERRAL_CODE')){ define( 'COINSNAP_REFERRAL_CODE', 'D19825' );}
+if(!defined('COINSNAP_PLUGIN_ID')){ define( 'COINSNAP_PLUGIN_ID', 'coinsnap-for-givewp' );}
+if(!defined('COINSNAP_SERVER_URL')){ define( 'COINSNAP_SERVER_URL', 'https://app.coinsnap.io' );}
 
 // Register the gateways 
 add_action('givewp_register_payment_gateway', static function ($paymentGatewayRegister) {

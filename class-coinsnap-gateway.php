@@ -26,30 +26,88 @@ class CoinsnapGivewpClass extends PaymentGateway {
     */
     public const WEBHOOK_EVENTS = ['New','Expired','Settled','Processing'];	 
 
-	public function __construct(SubscriptionModule $subscriptionModule = null)
-	{
-		// Settings in admin
-		add_filter('give_get_sections_gateways', [$this, 'admin_payment_gateway_sections']);
-		add_filter('give_get_settings_gateways', [$this, 'admin_payment_gateway_setting_fields']);
-        add_action('init', array( $this, 'give_process_webhook'));      
-       parent::__construct($subscriptionModule);
-	}
+    public function __construct(SubscriptionModule $subscriptionModule = null){
 
-	public static function id(): string
-	{
-		return 'coinsnap-gateway';
-	}
-	function admin_payment_gateway_sections($sections)
-	{
-		$sections['coinsnap'] = __('Coinsnap', 'coinsnap-for-givewp');
+        // Settings in admin
+        add_filter('give_get_sections_gateways', [$this, 'admin_payment_gateway_sections']);
+        add_filter('give_get_settings_gateways', [$this, 'admin_payment_gateway_setting_fields']);
+        add_action('init', array( $this, 'give_process_webhook'));
+        add_action('admin_notices', array($this, 'coinsnap_notice'));
+        parent::__construct($subscriptionModule);
+    }
+    
+    public function coinsnap_notice(){
+        
+        $page = (filter_input(INPUT_GET,'page',FILTER_SANITIZE_FULL_SPECIAL_CHARS ))? filter_input(INPUT_GET,'page',FILTER_SANITIZE_FULL_SPECIAL_CHARS ) : '';
+        $tab = (filter_input(INPUT_GET,'tab',FILTER_SANITIZE_FULL_SPECIAL_CHARS ))? filter_input(INPUT_GET,'tab',FILTER_SANITIZE_FULL_SPECIAL_CHARS ) : '';
+        
+        if($page === 'give-settings' && $tab === 'gateways'){
+        
+            $coinsnap_url = $this->getApiUrl();
+            $coinsnap_api_key = $this->getApiKey();
+            $coinsnap_store_id = $this->getStoreId();
+            $coinsnap_webhook_url = $this->get_webhook_url();
+                
+                if(!isset($coinsnap_store_id) || empty($coinsnap_store_id)){
+                    echo '<div class="notice notice-error"><p>';
+                    esc_html_e('Coinsnap Store ID is not set', 'coinsnap-for-givewp');
+                    echo '</p></div>';
+                }
 
-		return $sections;
-	}
+                if(!isset($coinsnap_api_key) || empty($coinsnap_api_key)){
+                    echo '<div class="notice notice-error"><p>';
+                    esc_html_e('Coinsnap API Key is not set', 'coinsnap-for-givewp');
+                    echo '</p></div>';
+                }
+                
+                if(!empty($coinsnap_api_key) && !empty($coinsnap_store_id)){
+                    $client = new \Coinsnap\Client\Store($coinsnap_url, $coinsnap_api_key);
+                    $store = $client->getStore($coinsnap_store_id);
+                    if (!empty($store)) {
+                        echo '<div class="notice notice-success"><p>';
+                        esc_html_e('Established connection to Coinsnap Server', 'coinsnap-for-givewp');
+                        echo '</p></div>';
+                        
+                        if ( ! $this->webhookExists( $coinsnap_store_id, $coinsnap_api_key, $coinsnap_webhook_url ) ) {
+                            if ( ! $this->registerWebhook( $coinsnap_store_id, $coinsnap_api_key, $coinsnap_webhook_url ) ) {
+                                echo '<div class="notice notice-error"><p>';
+                                esc_html_e('Unable to create webhook on Coinsnap Server', 'coinsnap-for-givewp');
+                                echo '</p></div>';
+                            }
+                            else {
+                                echo '<div class="notice notice-success"><p>';
+                                esc_html_e('Successfully registered a new webhook on Coinsnap Server', 'coinsnap-for-givewp');
+                                echo '</p></div>';
+                            }
+                        }
+                        else {
+                            echo '<div class="notice notice-info"><p>';
+                            esc_html_e('Webhook already exists, skipping webhook creation', 'coinsnap-for-givewp');
+                            echo '</p></div>';
+                        }
+                    }
+                    else {
+                        echo '<div class="notice notice-error"><p>';
+                        esc_html_e('Unable to connect to Coinsnap Server', 'coinsnap-for-givewp');
+                        echo esc_html($store['result']['message']);
+                        echo '</p></div>';
+                    }
+                }
+        }
+    }
 
-	function admin_payment_gateway_setting_fields($settings)
-	{
+    public static function id(): string {
+        return 'coinsnap-gateway';
+    }
+
+    function admin_payment_gateway_sections($sections){
+        $sections['coinsnap'] = __('Coinsnap', 'coinsnap-for-givewp');
+        return $sections;
+    }
+
+    function admin_payment_gateway_setting_fields($settings){
         $statuses = give_get_payment_statuses();
-		switch (give_get_current_setting_section()) {            
+        switch (give_get_current_setting_section()) {            
 			case 'coinsnap':
 				$settings = array(
 					array(
@@ -113,7 +171,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
 		}
 
 		return $settings;
-	}
+    }
 
 	/**
 	 * @inheritDoc
