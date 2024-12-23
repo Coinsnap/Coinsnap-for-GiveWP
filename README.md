@@ -1,5 +1,5 @@
-# Coinsnap for GiveWP payment plugin #
-![Coinsnap for GiveWP Add-on](https://github.com/Coinsnap/Coinsnap-for-GiveWP/blob/main/assets/images/1.png)
+/# Coinsnap for GiveWP payment plugin #
+![Coinsnap for GiveWP Add-on](https://resources.coinsnap.org/products/givewp/images/1.png)
 
 ## Bitcoin and Lightning payments for GiveWP  in WordPress ##
 
@@ -30,13 +30,13 @@ Coinsnap’s payment plugin for GiveWP makes it amazingly simple for your custom
 
 # Bitcoin and Lightning payments in GiveWP with Coinsnap #
 
-![GiveWP Plugin for Wordpress](https://github.com/Coinsnap/Coinsnap-for-GiveWP/blob/main/assets/images/2.png)
+![GiveWP Plugin for Wordpress](https://resources.coinsnap.org/products/givewp/images/2.png)
 
 GiveWP is a WordPress plugin that enables non-profit organizations and websites to collect donations. GiveWP provides a user-friendly interface to create donation forms, track fundraising campaigns and integrate various payment gateways to accept payments.
 
 Are you collecting donations or fundraising on your website with GiveWP? Then offer your donors the opportunity to donate with Bitcoin and Lightning. Coinsnap payment plug-in is intended for GiveWP to accept Bitcoin and Lightning payments via Coinsnap payment gateway https://app.coinsnap.io/. To do this, you need the free installed and configured GiveWP plugin (https://wordpress.org/plugins/give/) on your WordPress site. Additionally the plugin Coinsnap for GiveWP.
 
-![GiveWP donation form](https://github.com/Coinsnap/Coinsnap-for-GiveWP/blob/main/assets/images/7.png)
+![GiveWP donation form](https://resources.coinsnap.org/products/givewp/images/7.png)
 
 With the Coinsnap Bitcoin Lightning payment processing plugin you can immediately accept Bitcoin Lightning payments on your site. You don’t need your own Lightning node or any other technical requirements.
 
@@ -106,13 +106,13 @@ After successful installation, click Activate and then you can start setting up 
 
 ### 1.1. Add plugin ###
 
-![Plugin downloading from Github repository](https://github.com/Coinsnap/Coinsnap-for-GiveWP/blob/main/assets/images/3.jpg)
+![Plugin downloading from Github repository](https://resources.coinsnap.org/products/givewp/images/3.jpg)
 
 If you don’t want to install add-on directly via plugin, you can download Coinsnap GiveWP add-on from Coinsnap Github page or from WordPress directory and install it via “Upload Plugin” function:
 
 Navigate to Plugins > Add Plugins > Upload Plugin and Select zip-archive downloaded from Github.
 
-![Manual plugin installation](https://github.com/Coinsnap/Coinsnap-for-GiveWP/blob/main/assets/images/4.png)
+![Manual plugin installation](https://resources.coinsnap.org/products/givewp/images/4.png)
 
 Click “Install now” and Coinsnap GiveWP add-on will be installed in WordPress.
 
@@ -122,7 +122,7 @@ After you have successfully installed the plugin, you can proceed with the conne
 
 After the Coinsnap GiveWP add-on is installed and activated, a notice appears that the plugin still needs to be configured.
 
-![Payment gateways list](https://github.com/Coinsnap/Coinsnap-for-GiveWP/blob/main/assets/images/5.png)
+![Payment gateways list](https://resources.coinsnap.org/products/givewp/images/5.png)
 
 ### 1.3. Deposit Coinsnap data ###
 
@@ -131,13 +131,13 @@ After the Coinsnap GiveWP add-on is installed and activated, a notice appears th
 * Click Save changes
 * Navigate to Donations > Settings > Payment Gateways > Gateways >  coinsnap > Click Enabled 
 
-![Coinsnap store settings](https://github.com/Coinsnap/Coinsnap-for-GiveWP/blob/main/assets/images/6.png)
+![Coinsnap store settings](https://resources.coinsnap.org/products/givewp/images/6.png)
 
 If you don’t have a Coinsnap account yet, you can do so via the link shown: Coinsnap Registration
 
 ### 2. Create Coinsnap account ####
 
-![Coinsnap register](https://github.com/Coinsnap/Coinsnap-for-GiveWP/blob/main/assets/images/8.png)
+![Coinsnap register](https://resources.coinsnap.org/products/givewp/images/8.png)
 
 ### 2.1. Create a Coinsnap Account ####
 
@@ -149,7 +149,7 @@ If you are using a Lightning Wallet with Lightning Login, then you can also open
 
 You will receive an email to the given email address with a confirmation link, which you have to confirm. If you do not find the email, please check your spam folder.
 
-![E-mail address confirmation](https://github.com/Coinsnap/Coinsnap-for-GiveWP/blob/main/assets/images/9.png)
+![E-mail address confirmation](https://resources.coinsnap.org/products/givewp/images/9.png)
 
 Then please log in to the Coinsnap backend with the appropriate credentials.
 
@@ -170,7 +170,7 @@ https://coinsnap.io/lightning-wallet-mit-lightning-adresse/
 
 ### 3.1. GiveWP Coinsnap Settings ###
 
-![Connect website with Coinsnap](https://github.com/Coinsnap/Coinsnap-for-GiveWP/blob/main/assets/images/10.png)
+![Connect website with Coinsnap](https://resources.coinsnap.org/products/givewp/images/10.png)
 
 * Navigate to Donations > Settings > Payment Gateways and select Coinsnap
 * Enter Store ID and API Key
@@ -189,4 +189,4 @@ We make a real donation payment in our test GiveWP site.
 
 The Bitcoin + Lightning payment page is now displayed, offering the payer the option to pay with Bitcoin or also with Lightning. Both methods are integrated in the displayed QR code.
 
-![QR code on the Bitcoin payment page](https://github.com/Coinsnap/Coinsnap-for-GiveWP/blob/main/assets/images/11.png)
+![QR code on the Bitcoin payment page](https://resources.coinsnap.org/products/givewp/images/11.png)
