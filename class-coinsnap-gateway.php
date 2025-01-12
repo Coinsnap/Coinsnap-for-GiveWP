@@ -173,12 +173,12 @@ class CoinsnapGivewpClass extends PaymentGateway {
 		return $settings;
     }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function getId(): string	{
-		return self::id();
-	}
+    /**
+     * @inheritDoc
+     */
+    public function getId(): string {
+        return self::id();
+    }
 
 	/**
 	 * @inheritDoc
@@ -203,14 +203,12 @@ class CoinsnapGivewpClass extends PaymentGateway {
             </div>";
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public function createPayment(Donation $donation, $gatewayData): GatewayCommand
-	{
+    /**
+    * @inheritDoc
+    */
+    public function createPayment(Donation $donation, $gatewayData): GatewayCommand {
   
         $webhook_url = $this->get_webhook_url();
-        
 				
         if (! $this->webhookExists($this->getStoreId(), $this->getApiKey(), $webhook_url)){
             if (! $this->registerWebhook($this->getStoreId(), $this->getApiKey(),$webhook_url)) {                
@@ -221,18 +219,14 @@ class CoinsnapGivewpClass extends PaymentGateway {
 				
         $amount =  ($donation->amount->getAmount() / 100);        
         $redirectUrl = esc_url_raw(give_get_success_page_uri());
-				
-            
+        
         $amount = round($amount, 2);
         $buyerEmail = $donation->email;				
         $buyerName = $donation->firstName . ' ' .$donation->lastName;
-        
-						    	
 
         $metadata = [];
         $metadata['orderNumber'] = $donation->id;
         $metadata['customerName'] = $buyerName;
-				
 
         $checkoutOptions = new \Coinsnap\Client\InvoiceCheckoutOptions();
         $checkoutOptions->setRedirectURL( $redirectUrl );
@@ -240,23 +234,22 @@ class CoinsnapGivewpClass extends PaymentGateway {
         $camount = \Coinsnap\Util\PreciseNumber::parseFloat($amount,2);
 								
         $csinvoice = $client->createInvoice(
-				    $this->getStoreId(),  
-			    	$donation->amount->getCurrency()->getCode(),
-			    	$camount,
-			    	$donation->id,
-			    	$buyerEmail,
-			    	$buyerName, 
-			    	$redirectUrl,
-			    	COINSNAP_REFERRAL_CODE,     
-			    	$metadata,
-			    	$checkoutOptions
-		    	);
-				
+            $this->getStoreId(),  
+            $donation->amount->getCurrency()->getCode(),
+            $camount,
+            $donation->id,
+            $buyerEmail,
+            $buyerName, 
+            $redirectUrl,
+            COINSNAP_GIVEWP_REFERRAL_CODE,     
+            $metadata,
+            $checkoutOptions
+	);		
 		
         $payurl = $csinvoice->getData()['checkoutLink'] ;	
         wp_redirect($payurl);
         exit;
-	}
+    }
 
 	/**
 	 * @inerhitDoc
@@ -356,7 +349,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
         return give_get_option( 'coinsnap_store_id');
     }
     public function getApiUrl() {
-        return COINSNAP_SERVER_URL;
+        return COINSNAP_GIVEWP_SERVER_URL;
     }	
 
     public function webhookExists(string $storeId, string $apiKey, string $webhook): bool {	

@@ -11,7 +11,7 @@
  * Requires PHP:    7.4
  * Requires at least: 6.0
  * Tested up to:    6.7.1
- * GiveWP tested up to: 3.19.3
+ * GiveWP tested up to: 3.19.4
  * License:         GPL2
  * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -22,11 +22,11 @@ if (!defined( 'ABSPATH' )){
     exit;
 }
 
-if(!defined('SERVER_PHP_VERSION')){ define( 'SERVER_PHP_VERSION', '7.4' );}
-if(!defined('COINSNAP_VERSION')){ define( 'COINSNAP_VERSION', '1.0.0' );}
-if(!defined('COINSNAP_REFERRAL_CODE')){ define( 'COINSNAP_REFERRAL_CODE', 'D19825' );}
-if(!defined('COINSNAP_PLUGIN_ID')){ define( 'COINSNAP_PLUGIN_ID', 'coinsnap-for-givewp' );}
-if(!defined('COINSNAP_SERVER_URL')){ define( 'COINSNAP_SERVER_URL', 'https://app.coinsnap.io' );}
+if(!defined('SERVER_GIVEWP_PHP_VERSION')){ define( 'SERVER_GIVEWP_PHP_VERSION', '7.4' );}
+if(!defined('COINSNAP_GIVEWP_VERSION')){ define( 'COINSNAP_GIVEWP_VERSION', '1.0.0' );}
+if(!defined('COINSNAP_GIVEWP_REFERRAL_CODE')){ define( 'COINSNAP_GIVEWP_REFERRAL_CODE', 'D19825' );}
+if(!defined('COINSNAP_GIVEWP_PLUGIN_ID')){ define( 'COINSNAP_GIVEWP_PLUGIN_ID', 'coinsnap-for-givewp' );}
+if(!defined('COINSNAP_GIVEWP_SERVER_URL')){ define( 'COINSNAP_GIVEWP_SERVER_URL', 'https://app.coinsnap.io' );}
 
 // Register the gateways 
 add_action('givewp_register_payment_gateway', static function ($paymentGatewayRegister) {
