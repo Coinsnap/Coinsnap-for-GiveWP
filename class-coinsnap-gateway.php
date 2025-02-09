@@ -50,13 +50,13 @@ class CoinsnapGivewpClass extends PaymentGateway {
                 
                 if(!isset($coinsnap_store_id) || empty($coinsnap_store_id)){
                     echo '<div class="notice notice-error"><p>';
-                    esc_html_e('Coinsnap Store ID is not set', 'coinsnap-for-givewp');
+                    esc_html_e('GiveWP: Coinsnap Store ID is not set', 'coinsnap-for-givewp');
                     echo '</p></div>';
                 }
 
                 if(!isset($coinsnap_api_key) || empty($coinsnap_api_key)){
                     echo '<div class="notice notice-error"><p>';
-                    esc_html_e('Coinsnap API Key is not set', 'coinsnap-for-givewp');
+                    esc_html_e('GiveWP: Coinsnap API Key is not set', 'coinsnap-for-givewp');
                     echo '</p></div>';
                 }
                 
@@ -65,30 +65,30 @@ class CoinsnapGivewpClass extends PaymentGateway {
                     $store = $client->getStore($coinsnap_store_id);
                     if (!empty($store)) {
                         echo '<div class="notice notice-success"><p>';
-                        esc_html_e('Established connection to Coinsnap Server', 'coinsnap-for-givewp');
+                        esc_html_e('GiveWP: Established connection to Coinsnap Server', 'coinsnap-for-givewp');
                         echo '</p></div>';
                         
                         if ( ! $this->webhookExists( $coinsnap_store_id, $coinsnap_api_key, $coinsnap_webhook_url ) ) {
                             if ( ! $this->registerWebhook( $coinsnap_store_id, $coinsnap_api_key, $coinsnap_webhook_url ) ) {
                                 echo '<div class="notice notice-error"><p>';
-                                esc_html_e('Unable to create webhook on Coinsnap Server', 'coinsnap-for-givewp');
+                                esc_html_e('GiveWP: Unable to create webhook on Coinsnap Server', 'coinsnap-for-givewp');
                                 echo '</p></div>';
                             }
                             else {
                                 echo '<div class="notice notice-success"><p>';
-                                esc_html_e('Successfully registered a new webhook on Coinsnap Server', 'coinsnap-for-givewp');
+                                esc_html_e('GiveWP: Successfully registered webhook on Coinsnap Server', 'coinsnap-for-givewp');
                                 echo '</p></div>';
                             }
                         }
                         else {
                             echo '<div class="notice notice-info"><p>';
-                            esc_html_e('Webhook already exists, skipping webhook creation', 'coinsnap-for-givewp');
+                            esc_html_e('GiveWP: Webhook already exists, skipping webhook creation', 'coinsnap-for-givewp');
                             echo '</p></div>';
                         }
                     }
                     else {
                         echo '<div class="notice notice-error"><p>';
-                        esc_html_e('Unable to connect to Coinsnap Server', 'coinsnap-for-givewp');
+                        esc_html_e('GiveWP: Unable to connect to Coinsnap Server', 'coinsnap-for-givewp');
                         echo esc_html($store['result']['message']);
                         echo '</p></div>';
                     }

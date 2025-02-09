@@ -1,16 +1,16 @@
 /# Coinsnap for GiveWP payment plugin #
 ![Coinsnap for GiveWP Add-on](https://resources.coinsnap.org/products/givewp/images/1.png)
 
-## Bitcoin and Lightning payments for GiveWP  in WordPress ##
+## Bitcoin and Lightning payments for GiveWP in WordPress ##
 
-=== Coinsnap for GiveWP 1.0.0 ===
+=== Coinsnap for GiveWP 1.0.1 ===
 
 * Contributors: coinsnap
 * Tags: Lightning, Lightning Payment, SATS, Satoshi sats, bitcoin, Wordpress, GiveWP, accept bitcoin, bitcoin plugin, bitcoin payment processor, bitcoin e-commerce, Lightning Network, cryptocurrency, lightning payment processor
 * Requires at least: 5.2
 * Tested up to: 6.7.1
 * Requires PHP: 7.4
-* Stable tag: 1.0.0
+* Stable tag: 1.0.1
 * License: GPL2
 * License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -190,3 +190,12 @@ We make a real donation payment in our test GiveWP site.
 The Bitcoin + Lightning payment page is now displayed, offering the payer the option to pay with Bitcoin or also with Lightning. Both methods are integrated in the displayed QR code.
 
 ![QR code on the Bitcoin payment page](https://resources.coinsnap.org/products/givewp/images/11.png)
+
+
+# Changelog
+
+##### 1.0.0 :: 2024-01-20 =
+* Initial release. 
+
+##### 1.0.1 :: 2025-02-09 =
+* Update: Coinsnap server connection check indication in backend marks as "GiveWP".
