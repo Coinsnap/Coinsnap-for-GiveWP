@@ -16,10 +16,10 @@
 
 Bitcoin and Lightning payment processing with the Coinsnap add-on for GiveWP Wordpress donation platform.
 
-* GiveWP Coinsnap Demo Donation Page: https://givewp.coinsnap.org/
-* Blog Article: https://coinsnap.io/en/coinsnap-for-givewp-payment-plugin/
-* WordPress: https://wordpress.org/plugins/coinsnap-for-givewp/
-* GitHub: https://github.com/Coinsnap/Coinsnap-for-GiveWP
+* GiveWP Coinsnap Demo Donation Page: [https://givewp.coinsnap.org/](https://givewp.coinsnap.org/)
+* Blog Article: [https://coinsnap.io/coinsnap-for-givewp-payment-plugin/](https://coinsnap.io/coinsnap-for-givewp-payment-plugin/)
+* WordPress: [https://wordpress.org/plugins/coinsnap-for-givewp/](https://wordpress.org/plugins/coinsnap-for-givewp/)
+* GitHub: [https://github.com/Coinsnap/Coinsnap-for-GiveWP](https://github.com/Coinsnap/Coinsnap-for-GiveWP)
 
 # Description #
 
