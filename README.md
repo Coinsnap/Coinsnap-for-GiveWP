@@ -1,4 +1,4 @@
-/# Coinsnap for GiveWP payment plugin #
+/# Bitcoin payment for GiveWP #
 ![Coinsnap for GiveWP Add-on](https://resources.coinsnap.org/products/givewp/images/1.png)
 
 ## Bitcoin and Lightning payments for GiveWP in WordPress ##

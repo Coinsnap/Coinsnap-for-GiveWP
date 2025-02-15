@@ -2,7 +2,7 @@
 /*
  * Plugin Name:     Bitcoin payment for GiveWP 
  * Plugin URI:      https://www.coinsnap.io
- * Description:     Provides Bitcoin + Lightning Payments for GiveWP Wordpress donation platform.
+ * Description:     Bitcoin and Lightning payment processing with the Coinsnap add-on for GiveWP Wordpress donation platform.
  * Author:          Coinsnap
  * Author URI:      https://coinsnap.io/
  * Text Domain:     coinsnap-for-givewp
