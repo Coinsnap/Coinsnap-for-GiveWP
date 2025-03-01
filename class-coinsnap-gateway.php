@@ -33,8 +33,11 @@ class CoinsnapGivewpClass extends PaymentGateway {
         add_filter('give_get_settings_gateways', [$this, 'admin_payment_gateway_setting_fields']);
         add_action('init', array( $this, 'give_process_webhook'));
         add_action('admin_notices', array($this, 'coinsnap_notice'));
+        
         parent::__construct($subscriptionModule);
     }
+    
+    
     
     public function coinsnap_notice(){
         
