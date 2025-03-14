@@ -134,7 +134,7 @@ The Coinsnap for GiveWP plugin can be searched and installed in the WordPress pl
 
 You can easily find the Coinsnap for GiveWP plugin under **Plugins/Install new plugin** if you enter Coinsnap for GiveWP in the search field. Simply click on **Install now** in the Coinsnap plugin and WordPress will install it for you.
 
-Now WordPress will offer you to **Activate** the pugin – click the button and you set to go!
+Now WordPress will offer you to **Activate** the plugin – click the button and you set to go!
 
 From here on you can follow 1.1 to 1.3 and you will be set to sell for Bitcoin in no time at all!
 
