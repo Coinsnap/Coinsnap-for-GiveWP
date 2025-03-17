@@ -10,7 +10,7 @@
 * License: GPL2
 * License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Bitcoin and Lightning payment processing with the Coinsnap add-on for GiveWP Wordpress donation platform.
+Receive Bitcoin donations or Bitcoin contributions for your fundraisers. Easy setup, fast & simple transactions.
 
 # Description #
 
@@ -71,9 +71,9 @@ Coinsnap’s Bitcoin payment plugin for GiveWP makes it amazingly simple for you
 ## Documentation: ##
 
 * [Coinsnap API (1.0) documentation](https://docs.coinsnap.io/)
-* [Frequently Asked Questions](https://coinsnap.io/en/faq/) 
-* [Terms and Conditions](https://coinsnap.io/en/general-terms-and-conditions/)
-* [Privacy Policy](https://coinsnap.io/en/privacy/)
+* [Frequently Asked Questions](https://coinsnap.io/faq/) 
+* [Terms and Conditions](https://coinsnap.io/general-terms-and-conditions/)
+* [Privacy Policy](https://coinsnap.io/privacy/)
 
 
 # Installation #
