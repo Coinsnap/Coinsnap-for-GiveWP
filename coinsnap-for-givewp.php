@@ -12,7 +12,7 @@
  * Requires at least: 6.0
  * Tested up to:    6.7
  * Requires Plugins: give
- * GiveWP tested up to: 3.22.1
+ * GiveWP tested up to: 3.22.2
  * License:         GPL2
  * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  *
