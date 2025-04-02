@@ -111,22 +111,16 @@ class CoinsnapGivewpClass extends PaymentGateway {
     function admin_payment_gateway_setting_fields($settings){
         $statuses = give_get_payment_statuses();
         switch (give_get_current_setting_section()) {            
-			case 'coinsnap':
-				$settings = array(
-					array(
-						'id' => 'cnp_give_title',
-						'type' => 'title',
-					),
-				);				
-               
-
+            case 'coinsnap':
+                $settings = array(
+                    array('id' => 'cnp_give_title','type' => 'title')
+                );
                 $settings[] = array(
                     'id'   => 'coinsnap_store_id',
                     'name' => __( 'Store ID', 'coinsnap-for-givewp' ),
                     'desc' => __( 'Enter Store ID', 'coinsnap-for-givewp' ),
                     'type' => 'text',
                 );
-
                 $settings[] = array(
                     'id'   => 'coinsnap_api_key',
                     'name' => __( 'API Key', 'coinsnap-for-givewp' ),
@@ -153,9 +147,9 @@ class CoinsnapGivewpClass extends PaymentGateway {
                     'id'   => 'coinsnap_processing_status',
                     'name' => __( 'Processing Status', 'coinsnap-for-givewp' ),
                     'desc' => __( 'Select Processing Status', 'coinsnap-for-givewp' ),
-                    'type'        => 'select',
-                    'default'         => 'processing',
-                    'options'     => $statuses,
+                    'type'  => 'select',
+                    'default' => 'processing',
+                    'options' => $statuses,
                 );				
                 $settings[] = array(
                     'id'   => 'coinsnap_desc',
@@ -164,16 +158,24 @@ class CoinsnapGivewpClass extends PaymentGateway {
                     'default'  => "You will be taken away to Bitcoin + Lightning to complete the donation!",
                     'type' => 'text',
                 );
-				$settings[] = array(
-					'id' => 'cnp_give_title',
-					'type' => 'sectionend',
-				);
+                $settings[] = array(
+                    'id'   => 'coinsnap_autoredirect',
+                    'name' => __( 'Redirect after payment', 'coinsnap-for-givewp' ),
+                    'desc' => __( 'Redirect to Thank You page after payment automatically', 'coinsnap-for-givewp' ),
+                    'type' => 'checkbox',
+                    'default' => 'on',
+                );
+                
+		$settings[] = array(
+                    'id' => 'cnp_give_title',
+                    'type' => 'sectionend',
+		);
 
-				break;
+		break;
 
-		}
+            }
 
-		return $settings;
+        return $settings;
     }
 
     /**
@@ -220,10 +222,10 @@ class CoinsnapGivewpClass extends PaymentGateway {
             }
          }      
 				
-        $amount =  ($donation->amount->getAmount() / 100);        
+        $amount =  round(($donation->amount->getAmount() / 100), 2);
+        $currency = $donation->amount->getCurrency()->getCode();
         $redirectUrl = esc_url_raw(give_get_success_page_uri());
         
-        $amount = round($amount, 2);
         $buyerEmail = $donation->email;				
         $buyerName = $donation->firstName . ' ' .$donation->lastName;
 
@@ -231,38 +233,60 @@ class CoinsnapGivewpClass extends PaymentGateway {
         $metadata['orderNumber'] = $donation->id;
         $metadata['customerName'] = $buyerName;
 
-        $checkoutOptions = new \Coinsnap\Client\InvoiceCheckoutOptions();
-        $checkoutOptions->setRedirectURL( $redirectUrl );
-        $client =new \Coinsnap\Client\Invoice($this->getApiUrl(), $this->getApiKey());
-        $camount = \Coinsnap\Util\PreciseNumber::parseFloat($amount,2);
-								
-        $csinvoice = $client->createInvoice(
-            $this->getStoreId(),  
-            $donation->amount->getCurrency()->getCode(),
-            $camount,
-            $donation->id,
-            $buyerEmail,
-            $buyerName, 
-            $redirectUrl,
-            COINSNAP_GIVEWP_REFERRAL_CODE,     
-            $metadata,
-            $checkoutOptions
-	);		
-		
-        $payurl = $csinvoice->getData()['checkoutLink'] ;	
-        wp_redirect($payurl);
+        $client = new \Coinsnap\Client\Invoice($this->getApiUrl(), $this->getApiKey());
+        $checkInvoice = $client->checkPaymentData($amount,strtoupper( $currency ));
+                
+        if($checkInvoice['result'] === true){
+        
+            $camount = \Coinsnap\Util\PreciseNumber::parseFloat($amount,2);
+
+            $redirectAutomatically = give_get_option( 'coinsnap_autoredirect');
+            $walletMessage = '';
+
+            $csinvoice = $client->createInvoice(
+                $this->getStoreId(),  
+                $currency,
+                $camount,
+                $donation->id,
+                $buyerEmail,
+                $buyerName, 
+                $redirectUrl,
+                COINSNAP_GIVEWP_REFERRAL_CODE,     
+                $metadata,
+                $redirectAutomatically,
+                $walletMessage
+            );		
+
+            $payurl = $csinvoice->getData()['checkoutLink'] ;	
+            wp_redirect($payurl);
+        
+        }
+                
+        else {
+            if($checkInvoice['error'] === 'currencyError'){
+                $errorMessage = sprintf( 
+                /* translators: 1: Currency */
+                __( 'Currency %1$s is not supported by Coinsnap', 'coinsnap-for-givewp' ), strtoupper( $currency ));
+            }      
+            elseif($checkInvoice['error'] === 'amountError'){
+                $errorMessage = sprintf( 
+                /* translators: 1: Amount, 2: Currency */
+                __( 'Invoice amount cannot be less than %1$s %2$s', 'coinsnap-for-givewp' ), $checkInvoice['min_value'], strtoupper( $currency ));
+            }
+            throw new PaymentGatewayException($errorMessage);
+        }
+        
         exit;
     }
 
-	/**
-	 * @inerhitDoc
-	 */
-	public function refundDonation(Donation $donation): PaymentRefunded
-	{
+    /**
+     * @inerhitDoc
+     */
+    public function refundDonation(Donation $donation): PaymentRefunded {
 		// Step 1: refund the donation with your gateway.
 		// Step 2: return a command to complete the refund.
 		return new PaymentRefunded();
-	}
+    }
 
     public function give_process_webhook(){
 				

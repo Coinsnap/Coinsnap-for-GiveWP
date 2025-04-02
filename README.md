@@ -6,7 +6,7 @@
 * Requires at least: 5.2
 * Tested up to: 6.7
 * Requires PHP: 7.4
-* Stable tag: 1.0.2
+* Stable tag: 1.1.0
 * License: GPL2
 * License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -149,3 +149,7 @@ From here on you can follow 1.1 to 1.3 and you will be set to sell for Bitcoin i
 ##### 1.0.2 :: 2025-03-01
 * Update: Prevented plugin activation with non-installed and non-active GiveWP plugin.
 * Fixed getExceptionByStatusCode() method call status code parameter type.
+
+##### 1.1.0 :: 2025-04-02
+* Update: Added option "Redirect after payment automatically".
+* Update: Prevented redirect to payment gateway if payment amount is less than 1 SAT or currency in not supported by Coinsnap.
