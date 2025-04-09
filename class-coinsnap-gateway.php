@@ -217,8 +217,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
 				
         if (! $this->webhookExists($this->getStoreId(), $this->getApiKey(), $webhook_url)){
             if (! $this->registerWebhook($this->getStoreId(), $this->getApiKey(),$webhook_url)) {                
-                throw new PaymentGatewayException(esc_html('Unable to set Webhook url.', 'coinsnap-for-givewp'));
-                exit;
+                throw new PaymentGatewayException(esc_html__('Unable to set Webhook URL.', 'coinsnap-for-givewp'));
             }
          }      
 				
