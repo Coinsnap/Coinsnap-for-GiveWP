@@ -272,7 +272,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
                 /* translators: 1: Amount, 2: Currency */
                 __( 'Invoice amount cannot be less than %1$s %2$s', 'coinsnap-for-givewp' ), $checkInvoice['min_value'], strtoupper( $currency ));
             }
-            throw new PaymentGatewayException($errorMessage);
+            throw new PaymentGatewayException(esc_html($errorMessage));
         }
         
         exit;

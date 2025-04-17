@@ -10,9 +10,9 @@
  * Version:         1.1.0
  * Requires PHP:    7.4
  * Requires at least: 6.0
- * Tested up to:    6.7
+ * Tested up to:    6.8
  * Requires Plugins: give
- * GiveWP tested up to: 4.0.0
+ * GiveWP tested up to: 4.1.0
  * License:         GPL2
  * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  *
