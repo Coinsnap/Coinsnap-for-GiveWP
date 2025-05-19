@@ -162,3 +162,7 @@ From here on you can follow 1.1 to 1.3 and you will be set to sell for Bitcoin i
 * Update: Minimum order amount is added to connection status notice.
 * Compatibility with Give - Donation Plugin 4.2.1. is tested.
 * Compatibility with Wordpress 6.8 is tested.
+
+##### 1.2.1 :: 2025-05-19
+* Updated connection check errors handler
+* Updated Coinsnap Wordpress Library

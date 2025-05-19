@@ -58,7 +58,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
             $rawData = file_get_contents('php://input');
 
             $btcpay_server_url = give_get_option( 'btcpay_server_url');
-            $btcpay_api_key  = give_get_option( 'btcpay_api_key');
+            $btcpay_api_key  = filter_input(INPUT_POST,'apiKey',FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
             $client = new \Coinsnap\Client\Store($btcpay_server_url,$btcpay_api_key);
             if (count($client->getStores()) < 1) {
@@ -119,26 +119,41 @@ class CoinsnapGivewpClass extends PaymentGateway {
     public function coinsnapConnectionHandler(){
         
         $_nonce = filter_input(INPUT_POST,'_wpnonce',FILTER_SANITIZE_STRING);
-        $_provider = $this->get_payment_provider();
         
+        if(empty($this->getApiUrl()) || empty($this->getApiKey())){
+            $response = [
+                    'result' => false,
+                    'message' => __('GiveWP: empty gateway URL or API Key', 'coinsnap-for-givewp')
+            ];
+            $this->sendJsonResponse($response);
+        }
+        
+        $_provider = $this->get_payment_provider();
         $client = new \Coinsnap\Client\Invoice($this->getApiUrl(),$this->getApiKey());
-        $currency = give_get_currency();
         $store = new \Coinsnap\Client\Store($this->getApiUrl(),$this->getApiKey());
+        $currency = give_get_currency();
+        
         
         if($_provider === 'btcpay'){
-                        
-            $storePaymentMethods = $store->getStorePaymentMethods($this->getStoreId());
-            
-            if ($storePaymentMethods['code'] === 200) {
-                if($storePaymentMethods['result']['onchain'] && !$storePaymentMethods['result']['lightning']){
-                    $checkInvoice = $client->checkPaymentData(0,$currency,'bitcoin','calculation');
-                }
-                elseif($storePaymentMethods['result']['lightning']){
-                    $checkInvoice = $client->checkPaymentData(0,$currency,'lightning','calculation');
+            try {
+                
+                $storePaymentMethods = $store->getStorePaymentMethods($this->getStoreId());
+
+                if ($storePaymentMethods['code'] === 200) {
+                    if($storePaymentMethods['result']['onchain'] && !$storePaymentMethods['result']['lightning']){
+                        $checkInvoice = $client->checkPaymentData(0,$currency,'bitcoin','calculation');
+                    }
+                    elseif($storePaymentMethods['result']['lightning']){
+                        $checkInvoice = $client->checkPaymentData(0,$currency,'lightning','calculation');
+                    }
                 }
             }
-            else {
-                
+            catch (\Exception $e) {
+                $response = [
+                        'result' => false,
+                        'message' => __('GiveWP: API connection is not established', 'coinsnap-for-givewp')
+                ];
+                $this->sendJsonResponse($response);
             }
         }
         else {
@@ -160,7 +175,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
             __('GiveWP: BTCPay server is connected', 'coinsnap-for-givewp');
         
         if( wp_verify_nonce($_nonce,'coinsnap-ajax-nonce') ){
-            $response = ['result' => false,'message' => $_message_disconnected,'display' => get_option('coinsnap_connection_status_display')];
+            $response = ['result' => false,'message' => $_message_disconnected];
 
             try {
                 $this_store = $store->getStore($this->getStoreId());
@@ -172,17 +187,16 @@ class CoinsnapGivewpClass extends PaymentGateway {
                 $webhookExists = $this->webhookExists($this->getStoreId(), $this->getApiKey(), $this->get_webhook_url());
 
                 if($webhookExists) {
-                    $response = ['result' => true,'message' => $_message_connected.' ('.$connectionData.')','display' => get_option('coinsnap_connection_status_display')];
+                    $response = ['result' => true,'message' => $_message_connected.' ('.$connectionData.')'];
                     $this->sendJsonResponse($response);
                 }
 
                 $webhook = $this->registerWebhook( $this->getStoreId(), $this->getApiKey(), $this->get_webhook_url());
                 $response['result'] = (bool)$webhook;
                 $response['message'] = $webhook ? $_message_connected.' ('.$connectionData.')' : $_message_disconnected.' (Webhook)';
-                $response['display'] = get_option('coinsnap_connection_status_display');
             }
-            catch (Exception $e) {
-                $response['message'] = $e->getMessage();
+            catch (\Exception $e) {
+                $response['message'] =  __('GiveWP: API connection is not established', 'coinsnap-for-givewp');
             }
 
             $this->sendJsonResponse($response);
@@ -201,11 +215,10 @@ class CoinsnapGivewpClass extends PaymentGateway {
 	wp_enqueue_style( 'coinsnap-admin-styles' );
         //  Enqueue admin fileds handler script
         wp_enqueue_script('coinsnap-admin-fields',plugins_url('assets/js/adminFields.js', __FILE__ ),[ 'jquery' ],COINSNAP_GIVEWP_VERSION,true);
-        wp_enqueue_script('coinsnap-connection-check',plugin_dir_url( __FILE__ ) . 'assets/js/connectionCheck.js',[ 'jquery' ],COINSNAP_GIVEWP_VERSION,true);
+        wp_enqueue_script('coinsnap-connection-check',plugins_url('assets/js/connectionCheck.js', __FILE__ ),[ 'jquery' ],COINSNAP_GIVEWP_VERSION,true);
         wp_localize_script('coinsnap-connection-check', 'coinsnap_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'  => wp_create_nonce( 'coinsnap-ajax-nonce' ),
-            'cf7_post' => sanitize_text_field( filter_input(INPUT_GET,'post',FILTER_VALIDATE_INT) )
+            'nonce'  => wp_create_nonce( 'coinsnap-ajax-nonce' )
         ));
     }
     
@@ -249,7 +262,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
 		);
 
 		// Store the host to options before we leave the site.
-		update_option('btcpay_server_url', $host);
+		give_update_option('btcpay_server_url', $host);
 
 		// Return the redirect url.
 		wp_send_json_success(['url' => $url]);
@@ -292,7 +305,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
                 $settings[] = array(
                     'id'   => 'coinsnap_provider',
                     'name' => __( 'Payment provider', 'coinsnap-for-givewp' ),
-                    'desc' => __( 'Select Expired Status', 'coinsnap-for-givewp' ),
+                    'desc' => __( 'Select payment provider', 'coinsnap-for-givewp' ),
                     'type'        => 'select',
                     'options'   => [
                         'coinsnap'  => 'Coinsnap',
