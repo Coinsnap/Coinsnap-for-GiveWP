@@ -136,7 +136,6 @@ class CoinsnapGivewpClass extends PaymentGateway {
         
         if($_provider === 'btcpay'){
             try {
-                
                 $storePaymentMethods = $store->getStorePaymentMethods($this->getStoreId());
 
                 if ($storePaymentMethods['code'] === 200) {
@@ -465,30 +464,37 @@ class CoinsnapGivewpClass extends PaymentGateway {
         $_provider = $this->get_payment_provider();
         if($_provider !== 'coinsnap'){
         
-            $store = new Store($this->getApiUrl(), $this->getApiKey());            
-            $storePaymentMethods = $store->getStorePaymentMethods($this->getStoreId());
+            $store = new Store($this->getApiUrl(), $this->getApiKey());
             
-            if ($storePaymentMethods['code'] === 200) {
-                if(!$storePaymentMethods['result']['onchain'] && !$storePaymentMethods['result']['lightning']){
+            try {
+                $storePaymentMethods = $store->getStorePaymentMethods($this->getStoreId());
+
+                if ($storePaymentMethods['code'] === 200) {
+                    if(!$storePaymentMethods['result']['onchain'] && !$storePaymentMethods['result']['lightning']){
+                        $errorMessage = __( 'No payment method is configured on BTCPay server', 'coinsnap-for-givewp' );
+                        throw new PaymentGatewayException(esc_html($errorMessage));
+                    }
+                }
+                else {
+                    $errorMessage = __( 'Error store loading. Wrong or empty Store ID', 'coinsnap-for-givewp' );
+                     $checkInvoice = array('result' => false,'error' => esc_html($errorMessage));
+                }
+
+                if($storePaymentMethods['result']['onchain'] && !$storePaymentMethods['result']['lightning']){
+                    $checkInvoice = $client->checkPaymentData((float)$amount,strtoupper( $currency ),'bitcoin');
+                }
+                elseif($storePaymentMethods['result']['lightning']){
+                    $checkInvoice = $client->checkPaymentData((float)$amount,strtoupper( $currency ),'lightning');
+                }
+                else {
                     $errorMessage = __( 'No payment method is configured on BTCPay server', 'coinsnap-for-givewp' );
                     throw new PaymentGatewayException(esc_html($errorMessage));
                 }
             }
-            else {
-                
+            catch (\Throwable $e){
+                $errorMessage = __( 'API connection is not established', 'coinsnap-for-givewp' );
+                $checkInvoice = array('result' => false,'error' => esc_html($errorMessage));
             }
-            
-            if($storePaymentMethods['result']['onchain'] && !$storePaymentMethods['result']['lightning']){
-                $checkInvoice = $client->checkPaymentData((float)$amount,strtoupper( $currency ),'bitcoin');
-            }
-            elseif($storePaymentMethods['result']['lightning']){
-                $checkInvoice = $client->checkPaymentData((float)$amount,strtoupper( $currency ),'lightning');
-            }
-            else {
-                $errorMessage = __( 'No payment method is configured on BTCPay server', 'coinsnap-for-givewp' );
-                throw new PaymentGatewayException(esc_html($errorMessage));
-            }
-        
         }
         else {
             $checkInvoice = $client->checkPaymentData((float)$amount,strtoupper( $currency ));

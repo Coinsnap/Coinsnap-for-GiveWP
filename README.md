@@ -6,7 +6,7 @@
 * Requires at least: 5.2
 * Tested up to: 6.8
 * Requires PHP: 7.4
-* Stable tag: 1.1.0
+* Stable tag: 1.2.2
 * License: GPL2
 * License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -166,3 +166,7 @@ From here on you can follow 1.1 to 1.3 and you will be set to sell for Bitcoin i
 ##### 1.2.1 :: 2025-05-19
 * Updated connection check errors handler
 * Updated Coinsnap Wordpress Library
+
+##### 1.2.2 :: 2025-05-25
+* Updated payment gateway connection exception handler.
+* Compatibility with Give - Donation Plugin 4.3 is tested.
