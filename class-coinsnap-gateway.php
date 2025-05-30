@@ -462,7 +462,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
         $client = new \Coinsnap\Client\Invoice($this->getApiUrl(), $this->getApiKey());
         
         $_provider = $this->get_payment_provider();
-        if($_provider !== 'coinsnap'){
+        if($_provider === 'btcpay'){
         
             $store = new Store($this->getApiUrl(), $this->getApiKey());
             
@@ -514,23 +514,28 @@ class CoinsnapGivewpClass extends PaymentGateway {
             $redirectAutomatically = give_get_option( 'coinsnap_autoredirect');
             $walletMessage = '';
 
-            $csinvoice = $client->createInvoice(
-                $this->getStoreId(),  
-                $currency,
-                $camount,
-                $donation->id,
-                $buyerEmail,
-                $buyerName, 
-                $redirectUrl,
-                COINSNAP_GIVEWP_REFERRAL_CODE,     
-                $metadata,
-                $redirectAutomatically,
-                $walletMessage
-            );		
+            try {
+                $csinvoice = $client->createInvoice(
+                    $this->getStoreId(),  
+                    $currency,
+                    $camount,
+                    $donation->id,
+                    $buyerEmail,
+                    $buyerName, 
+                    $redirectUrl,
+                    COINSNAP_GIVEWP_REFERRAL_CODE,     
+                    $metadata,
+                    $redirectAutomatically,
+                    $walletMessage
+                );		
 
-            $payurl = $csinvoice->getData()['checkoutLink'] ;	
-            wp_redirect($payurl);
-        
+                $payurl = $csinvoice->getData()['checkoutLink'] ;	
+                wp_redirect($payurl);
+            }
+            catch (\Throwable $e){
+                $errorMessage = __( 'API connection is not established', 'coinsnap-for-ninja-forms' );
+                throw new PaymentGatewayException(esc_html($errorMessage));
+            }
         }
                 
         else {
@@ -586,9 +591,9 @@ class CoinsnapGivewpClass extends PaymentGateway {
         $order_status = 'pending';
         
         
-        if ($status == 'Expired') $order_status = give_get_option('coinsnap_expired_status');
-        else if ($status == 'Processing') $order_status = give_get_option('coinsnap_processing_status');
-        else if ($status == 'Settled') $order_status = give_get_option('coinsnap_settled_status');
+        if ($status == 'Expired'){ $order_status = give_get_option('coinsnap_expired_status'); }
+        else if ($status == 'Processing'){ $order_status = give_get_option('coinsnap_processing_status'); }
+        else if ($status == 'Settled'){ $order_status = give_get_option('coinsnap_settled_status'); }
         
         
         if (isset($donation_id)){
@@ -622,9 +627,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
                             break;
                     case 'revoked':
                             $donation->status = DonationStatus::REVOKED();            
-                            break;                                 
-
-
+                            break;
                 }                
                 $donation->gatewayTransactionId = $invoice_id;
                 $donation->save();
