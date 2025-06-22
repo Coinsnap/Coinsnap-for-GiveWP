@@ -7,12 +7,12 @@
  * Author URI:      https://coinsnap.io/
  * Text Domain:     coinsnap-for-givewp
  * Domain Path:     /languages
- * Version:         1.2.2
+ * Version:         1.3.0
  * Requires PHP:    7.4
  * Requires at least: 6.0
  * Tested up to:    6.8
  * Requires Plugins: give
- * GiveWP tested up to: 4.3.1
+ * GiveWP tested up to: 4.4.0
  * License:         GPL2
  * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -34,6 +34,7 @@ if(!defined('COINSNAP_API_PATH')){define( 'COINSNAP_API_PATH', '/api/v1/');}
 if(!defined('COINSNAP_SERVER_PATH')){define( 'COINSNAP_SERVER_PATH', 'stores' );}
 
 // Register the gateways 
+
 add_action('givewp_register_payment_gateway', static function ($paymentGatewayRegister) {
     include 'class-coinsnap-gateway.php';    
     $paymentGatewayRegister->registerGateway(CoinsnapGivewpClass::class);    
@@ -64,13 +65,13 @@ add_action('init', function() {
     }
     
     // Setting up and handling custom endpoint for api key redirect from BTCPay Server.
-    add_rewrite_endpoint('btcpay-settings-callback', EP_ROOT);
+    add_rewrite_endpoint('coinsnap-for-givewp-btcpay-settings-callback', EP_ROOT);
 });
 
 // To be able to use the endpoint without appended url segments we need to do this.
 add_filter('request', function($vars) {
-    if (isset($vars['btcpay-settings-callback'])) {
-        $vars['btcpay-settings-callback'] = true;
+    if (isset($vars['coinsnap-for-givewp-btcpay-settings-callback'])) {
+        $vars['coinsnap-for-givewp-btcpay-settings-callback'] = true;
     }
     return $vars;
 });

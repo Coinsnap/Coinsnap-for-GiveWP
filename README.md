@@ -6,7 +6,7 @@
 * Requires at least: 5.2
 * Tested up to: 6.8
 * Requires PHP: 7.4
-* Stable tag: 1.2.2
+* Stable tag: 1.3.0
 * License: GPL2
 * License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -170,3 +170,10 @@ From here on you can follow 1.1 to 1.3 and you will be set to sell for Bitcoin i
 ##### 1.2.2 :: 2025-05-25
 * Updated payment gateway connection exception handler.
 * Compatibility with Give - Donation Plugin 4.3 is tested.
+
+##### 1.3.0 :: 2025-06-22
+* Update: Unique name for BTCPay server setup Wizard return URL is set.
+* Update: Webhook data is saved as setting in Wordpress database.
+* Update: Added secret string check in webhook payload process.
+* Compatibility with Give - Donation Plugin 4.4 is tested.
+
