@@ -586,7 +586,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
             // Get headers and check for signature
             $headers = getallheaders();
             $signature = null; $payloadKey = null;
-            $_provider = (get_option('coinsnap_provider') === 'btcpay')? 'btcpay' : 'coinsnap';
+            $_provider = ($this->get_payment_provider() === 'btcpay')? 'btcpay' : 'coinsnap';
                 
             foreach ($headers as $key => $value) {
                 if ((strtolower($key) === 'x-coinsnap-sig' && $_provider === 'coinsnap') || (strtolower($key) === 'btcpay-sig' && $_provider === 'btcpay')) {
