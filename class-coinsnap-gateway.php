@@ -615,6 +615,10 @@ class CoinsnapGivewpClass extends PaymentGateway {
             
             $invoice_id = $postData->invoiceId;
             
+            if(strpos($invoice_id,'test_') !== false){
+                wp_die('Successful webhook test', '', ['response' => 200]);
+            }
+            
             $client = new \Coinsnap\Client\Invoice( $this->getApiUrl(), $this->getApiKey() );			
             $csinvoice = $client->getInvoice($this->getStoreId(), $invoice_id);
             $status = $csinvoice->getData()['status'] ;
