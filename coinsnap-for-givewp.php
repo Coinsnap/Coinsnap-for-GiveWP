@@ -7,12 +7,12 @@
  * Author URI:      https://coinsnap.io/
  * Text Domain:     coinsnap-for-givewp
  * Domain Path:     /languages
- * Version:         1.3.0
+ * Version:         1.3.1
  * Requires PHP:    7.4
  * Requires at least: 6.0
  * Tested up to:    6.8
  * Requires Plugins: give
- * GiveWP tested up to: 4.4.0
+ * GiveWP tested up to: 4.6.0
  * License:         GPL2
  * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -24,7 +24,7 @@ if (!defined( 'ABSPATH' )){
 }
 
 if(!defined('COINSNAP_GIVEWP_PHP_VERSION')){ define( 'COINSNAP_GIVEWP_PHP_VERSION', '7.4' );}
-if(!defined('COINSNAP_GIVEWP_VERSION')){ define( 'COINSNAP_GIVEWP_VERSION', '1.2.2' );}
+if(!defined('COINSNAP_GIVEWP_VERSION')){ define( 'COINSNAP_GIVEWP_VERSION', '1.3.1' );}
 if(!defined('COINSNAP_GIVEWP_REFERRAL_CODE')){ define( 'COINSNAP_GIVEWP_REFERRAL_CODE', 'D19825' );}
 if(!defined('COINSNAP_GIVEWP_PLUGIN_ID')){ define( 'COINSNAP_GIVEWP_PLUGIN_ID', 'coinsnap-for-givewp' );}
 if(!defined('COINSNAP_GIVEWP_SERVER_URL')){ define( 'COINSNAP_GIVEWP_SERVER_URL', 'https://app.coinsnap.io' );}
@@ -59,11 +59,6 @@ function givewp_dependency_notice(){?>
     
 add_action('init', function() {
     
-    //  Session launcher
-    if ( ! session_id() ) {
-        session_start();
-    }
-    
     // Setting up and handling custom endpoint for api key redirect from BTCPay Server.
     add_rewrite_endpoint('coinsnap-for-givewp-btcpay-settings-callback', EP_ROOT);
 });
@@ -72,6 +67,7 @@ add_action('init', function() {
 add_filter('request', function($vars) {
     if (isset($vars['coinsnap-for-givewp-btcpay-settings-callback'])) {
         $vars['coinsnap-for-givewp-btcpay-settings-callback'] = true;
+        $vars['coinsnap-for-givewp-btcpay-nonce'] = wp_create_nonce('coinsnapgive-btcpay-nonce');
     }
     return $vars;
 });

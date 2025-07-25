@@ -53,10 +53,12 @@ class CoinsnapGivewpClass extends PaymentGateway {
             if (!isset( $wp_query->query_vars['coinsnap-for-givewp-btcpay-settings-callback'])) {
                 return;
             }
+            
+            if(!isset($wp_query->query_vars['coinsnap-for-givewp-btcpay-nonce']) || !wp_verify_nonce($wp_query->query_vars['coinsnap-for-givewp-btcpay-nonce'],'coinsnapgive-btcpay-nonce')){
+                return;
+            }
 
             $CoinsnapBTCPaySettingsUrl = admin_url('edit.php?post_type=give_forms&page=give-settings&tab=gateways&section=coinsnap&provider=btcpay');
-
-            $rawData = file_get_contents('php://input');
 
             $btcpay_server_url = give_get_option( 'btcpay_server_url');
             $btcpay_api_key  = filter_input(INPUT_POST,'apiKey',FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -69,12 +71,14 @@ class CoinsnapGivewpClass extends PaymentGateway {
             }
 
             // Data does get submitted with url-encoded payload, so parse $_POST here.
-            if (!empty($_POST) || wp_verify_nonce(filter_input(INPUT_POST,'wp_nonce',FILTER_SANITIZE_FULL_SPECIAL_CHARS),'-1')) {
+            if (!empty($_POST)) {
                 $data['apiKey'] = filter_input(INPUT_POST,'apiKey',FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? null;
-                $permissions = (isset($_POST['permissions']) && is_array($_POST['permissions']))? $_POST['permissions'] : null;
-                if (isset($permissions)) {
-                    foreach ($permissions as $key => $value) {
-                        $data['permissions'][$key] = sanitize_text_field($permissions[$key] ?? null);
+                if(isset($_POST['permissions'])){
+                    $permissions = array_map('sanitize_text_field', wp_unslash($_POST['permissions']));
+                    if(is_array($permissions)){
+                        foreach ($permissions as $key => $value) {
+                            $data['permissions'][$key] = sanitize_text_field($permissions[$key] ?? null);
+                        }
                     }
                 }
             }
@@ -339,7 +343,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
                     'id' => 'btcpay_server_url',
                     'name'       => __( 'BTCPay server URL*', 'coinsnap-for-givewp' ),
                     'type'        => 'text',
-                    'desc'        => __( '<a href="#" class="btcpay-apikey-link">Check connection</a>', 'coinsnap-for-givewp' ).'<br/><br/><button class="button btcpay-apikey-link" id="btcpay_wizard_button" target="_blank">'. __('Generate API key','coinsnap-for-givewp').'</button>',
+                    'desc'        => __( '<a href="#" class="btcpay-apikey-link">Check connection</a>', 'coinsnap-for-givewp' ).'<br/><br/><button class="button btcpay-apikey-link" id="btcpay_wizard_button" type="button" target="_blank">'. __('Generate API key','coinsnap-for-givewp').'</button>',
                     'default'     => '',
                     'class' => 'btcpay'
                 );
@@ -753,25 +757,5 @@ class CoinsnapGivewpClass extends PaymentGateway {
 	}
 
 	return null;
-    }
-
-    public function updateWebhook(string $webhookId,string $webhookUrl,string $secret,bool $enabled,bool $automaticRedelivery,?array $events): ?WebhookResult {
-        try {
-            $whClient = new Webhook($this->getApiUrl(), $this->getApiKey() );
-            $webhook = $whClient->updateWebhook(
-                $this->getStoreId(),
-                $webhookUrl,
-		$webhookId,
-		$events ?? self::WEBHOOK_EVENTS,
-		$enabled,
-		$automaticRedelivery,
-		$secret
-            );
-            return $webhook;
-        }
-        catch (\Throwable $e) {
-            $errorMessage = __('Error updating existing Webhook from Coinsnap: ', 'coinsnap-for-givewp' ) . $e->getMessage();
-            throw new PaymentGatewayException(esc_html($errorMessage));
-	}
     }
 }

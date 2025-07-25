@@ -6,7 +6,7 @@
 * Requires at least: 5.2
 * Tested up to: 6.8
 * Requires PHP: 7.4
-* Stable tag: 1.3.0
+* Stable tag: 1.3.1
 * License: GPL2
 * License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -176,4 +176,11 @@ From here on you can follow 1.1 to 1.3 and you will be set to sell for Bitcoin i
 * Update: Webhook data is saved as setting in Wordpress database.
 * Update: Added secret string check in webhook payload process.
 * Compatibility with Give - Donation Plugin 4.4 is tested.
+
+##### 1.3.1 :: 2025-07-25
+* Updated Coinsnap WP library.
+* Update: Generate API key button behavior is changed.
+* Update: Added nonce check for BTCPay server request in Wizard setup flow.
+* Compatibility with Wordpress 6.8.2 is tested.
+* Compatibility with Give - Donation Plugin 4.6.0 is tested.
 
