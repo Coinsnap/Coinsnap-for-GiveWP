@@ -3,7 +3,7 @@
 Contributors: coinsnap
 Tags: Lightning, SATS, bitcoin, GiveWP, payment gateway
 Tested up to: 6.8
-Stable tag: 1.3.1
+Stable tag: 1.4.0
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -190,3 +190,8 @@ See the FAQ on [https://coinsnap.io/coinsnap-for-givewp-installation-guide/](htt
 * Update: Added nonce check for BTCPay server request in Wizard setup flow.
 * Compatibility with Wordpress 6.8.2 is tested.
 * Compatibility with Give - Donation Plugin 4.6.0 is tested.
+
+= 1.4.0 :: 2025-08-20 =
+* Updated BTCPay server minimum payment amount calculation system
+* Updated BTCPay server events and webhook payload handler
+* Compatibility with Give - Donation Plugin 4.6.1 is tested.
