@@ -7,12 +7,12 @@
  * Author URI:      https://coinsnap.io/
  * Text Domain:     coinsnap-for-givewp
  * Domain Path:     /languages
- * Version:         1.4.0
+ * Version:         1.4.1
  * Requires PHP:    7.4
  * Requires at least: 6.0
  * Tested up to:    6.8
  * Requires Plugins: give
- * GiveWP tested up to: 4.6.1
+ * GiveWP tested up to: 4.10.1
  * License:         GPL2
  * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -24,7 +24,7 @@ if (!defined( 'ABSPATH' )){
 }
 
 if(!defined('COINSNAP_GIVEWP_PHP_VERSION')){ define( 'COINSNAP_GIVEWP_PHP_VERSION', '7.4' );}
-if(!defined('COINSNAP_GIVEWP_VERSION')){ define( 'COINSNAP_GIVEWP_VERSION', '1.4.0' );}
+if(!defined('COINSNAP_GIVEWP_VERSION')){ define( 'COINSNAP_GIVEWP_VERSION', '1.4.1' );}
 if(!defined('COINSNAP_GIVEWP_REFERRAL_CODE')){ define( 'COINSNAP_GIVEWP_REFERRAL_CODE', 'D19825' );}
 if(!defined('COINSNAP_GIVEWP_PLUGIN_ID')){ define( 'COINSNAP_GIVEWP_PLUGIN_ID', 'coinsnap-for-givewp' );}
 if(!defined('COINSNAP_GIVEWP_SERVER_URL')){ define( 'COINSNAP_GIVEWP_SERVER_URL', 'https://app.coinsnap.io' );}
@@ -71,4 +71,3 @@ add_filter('request', function($vars) {
     }
     return $vars;
 });
-

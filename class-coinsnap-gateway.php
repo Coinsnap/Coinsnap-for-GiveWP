@@ -2,6 +2,7 @@
 if (!defined( 'ABSPATH' )){
     exit;
 }
+
 use Give\Donations\Models\Donation;
 use Give\Donations\Models\DonationNote;
 use Give\Donations\ValueObjects\DonationStatus;
@@ -35,8 +36,9 @@ class CoinsnapGivewpClass extends PaymentGateway {
         // Settings in admin
         add_filter('give_get_sections_gateways', [$this, 'admin_payment_gateway_sections']);
         add_filter('give_get_settings_gateways', [$this, 'admin_payment_gateway_setting_fields']);
-        add_action('init', array( $this, 'give_process_webhook'));
        
+        //  Webhook payload processing
+        $this -> give_process_webhook();
         
         if (is_admin()) {
             add_action('admin_notices', array($this, 'coinsnap_notice'));
@@ -134,7 +136,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
             $this->sendJsonResponse($response);
         }
         
-        $_provider = $this->get_payment_provider();
+        $_provider = $this->getPaymentProvider();
         $client = new \Coinsnap\Client\Invoice($this->getApiUrl(),$this->getApiKey());
         $store = new \Coinsnap\Client\Store($this->getApiUrl(),$this->getApiKey());
         $currency = give_get_currency();
@@ -450,14 +452,12 @@ class CoinsnapGivewpClass extends PaymentGateway {
     * @inheritDoc
     */
     public function createPayment(Donation $donation, $gatewayData): GatewayCommand {
-  
-        $webhook_url = $this->get_webhook_url();
-				
+        
         if (! $this->webhookExists($this->getApiUrl(),$this->getApiKey(),$this->getStoreId())){
             if (! $this->registerWebhook($this->getApiUrl(),$this->getApiKey(),$this->getStoreId())) {                
-                throw new PaymentGatewayException(esc_html__('Unable to set Webhook URL.', 'coinsnap-for-givewp'));
+                throw new PaymentGatewayException(esc_html__('Unable to register Webhook for StoreID ', 'coinsnap-for-givewp').$this->getStoreId());
             }
-         }      
+        }
 				
         $amount =  round(($donation->amount->getAmount() / 100), 2);
         $currency = $donation->amount->getCurrency()->getCode();
@@ -470,11 +470,9 @@ class CoinsnapGivewpClass extends PaymentGateway {
         $metadata['orderNumber'] = $donation->id;
         $metadata['customerName'] = $buyerName;
         
-        
-
         $client = new \Coinsnap\Client\Invoice($this->getApiUrl(), $this->getApiKey());
         
-        $_provider = $this->get_payment_provider();
+        $_provider = $this->getPaymentProvider();
         if($_provider === 'btcpay'){
         
             $store = new Store($this->getApiUrl(), $this->getApiKey());
@@ -515,7 +513,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
                 
         if($checkInvoice['result'] === true){
             
-            if($this->get_payment_provider() === 'btcpay') {
+            if($this->getPaymentProvider() === 'btcpay') {
                 $metadata['orderId'] = $donation->id;
             }
             
@@ -544,9 +542,10 @@ class CoinsnapGivewpClass extends PaymentGateway {
                     $metadata,
                     $redirectAutomatically,
                     $walletMessage
-                );		
-
+                );
+                
                 $payurl = $csinvoice->getData()['checkoutLink'] ;	
+                
                 wp_redirect($payurl);
             }
             catch (\Throwable $e){
@@ -582,7 +581,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
     }
 
     public function give_process_webhook(){
-				
+        
         if ( null === ( filter_input(INPUT_GET,'give-listener') ) || filter_input(INPUT_GET,'give-listener') !== 'coinsnap' ) {
             return;
         }
@@ -593,6 +592,9 @@ class CoinsnapGivewpClass extends PaymentGateway {
             if (!$rawPostData) {
                 wp_die('No raw post data received', '', ['response' => 400]);
             }
+        
+            //$log = get_option('coinsnap_log');
+            //update_option('coinsnap_log', $log ."\r\n" . date("d.m.Y h:i:s") ." Test webhook: ".$rawPostData);
 
             // Get headers and check for signature
             $headers = getallheaders();
@@ -606,7 +608,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
             }
 
             // Handle missing or invalid signature
-            if (!isset($signature)) {
+            if ($signature === null) {
                 wp_die('Authentication required', '', ['response' => 401]);
             }
 
@@ -620,7 +622,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
                 // Parse the JSON payload
                 $postData = json_decode($rawPostData, false, 512, JSON_THROW_ON_ERROR);
 
-                if (!isset($postData->invoiceId)) {
+                if($postData->invoiceId === null){
                     wp_die('No Coinsnap invoiceId provided', '', ['response' => 400]);
                 }
 
@@ -629,69 +631,62 @@ class CoinsnapGivewpClass extends PaymentGateway {
                 }
 
                 $invoice_id = esc_html($postData->invoiceId);
-                
                 $client = new \Coinsnap\Client\Invoice( $this->getApiUrl(), $this->getApiKey() );			
                 $csinvoice = $client->getInvoice($this->getStoreId(), $invoice_id);
                 $status = $csinvoice->getData()['status'] ;
-                $donation_id = ($this->get_payment_provider() === 'btcpay')? $csinvoice->getData()['metadata']['orderId'] : $csinvoice->getData()['orderId'];
-
-                $order_status = 'pending';
+                $donation_id = ($this->getPaymentProvider() === 'btcpay')? $csinvoice->getData()['metadata']['orderId'] : $csinvoice->getData()['orderId'];
+                
+                if ($donation_id === null){
+                    $errorMessage = 'Donation ID in invoice data is NULL';
+                    throw new PaymentGatewayException(esc_html($errorMessage));
+                }
+                
+                $donation = Donation::find($donation_id);            
+                if (!$donation) {
+                    $errorMessage = 'Donation is not found by Donation ID';
+                    throw new PaymentGatewayException(esc_html($errorMessage));
+                }
 
                 switch ($status){
                     case 'Expired':
-                    case 'InvoiceExpired':
                         $order_status = give_get_option('coinsnap_expired_status');
                         break;
 
                     case 'Processing':
-                    case 'InvoiceProcessing':
                         $order_status = give_get_option('coinsnap_processing_status');
                         break;
 
                     case 'Settled':
-                    case 'InvoiceSettled':
                         $order_status = give_get_option('coinsnap_settled_status');
                         break;
                 }
+                
+                
 
-                if (isset($donation_id)){
-                    $donation = Donation::find($donation_id);            
-                    if ($donation) {
-
-                        switch ($order_status) {
-                            case 'pending':
-                                $donation->status = DonationStatus::PENDING();            
-                                break;
-                            case 'processing':
-                                $donation->status = DonationStatus::PROCESSING();
-                                break;    
-                            case 'publish':
-                                $donation->status = DonationStatus::COMPLETE();
-                                break;     
-                            case 'refunded':
-                                $donation->status = DonationStatus::REFUNDED();
-                                break;  
-                            case 'failed':
-                                $donation->status = DonationStatus::FAILED();
-                                break;     
-                            case 'cancelled':
-                                $donation->status = DonationStatus::CANCELLED();
-                                break;
-                            case 'abandoned':
-                                $donation->status = DonationStatus::ABANDONED();
-                                break;
-                            case 'preapproval':
-                                $donation->status = DonationStatus::PREAPPROVAL();
-                                break;
-                            case 'revoked':
-                                $donation->status = DonationStatus::REVOKED();            
-                                break;
-                        }
-                        
-                        $donation->gatewayTransactionId = $invoice_id;
-                        $donation->save();
-                    }									
+                switch ($order_status) {
+                    case 'pending':
+                        $donation->status = DonationStatus::PENDING(); break;
+                    case 'processing':
+                        $donation->status = DonationStatus::PROCESSING(); break;    
+                    case 'publish':
+                        $donation->status = DonationStatus::COMPLETE(); break;     
+                    case 'refunded':
+                        $donation->status = DonationStatus::REFUNDED(); break;  
+                    case 'failed':
+                        $donation->status = DonationStatus::FAILED(); break;     
+                    case 'cancelled':
+                        $donation->status = DonationStatus::CANCELLED(); break;
+                    case 'abandoned':
+                        $donation->status = DonationStatus::ABANDONED(); break;
+                    case 'preapproval':
+                        $donation->status = DonationStatus::PREAPPROVAL(); break;
+                    case 'revoked':
+                        $donation->status = DonationStatus::REVOKED(); break;
                 }
+                        
+                $donation->gatewayTransactionId = $invoice_id;
+                $donation->save();
+                
                 echo "OK";
                 exit;
             }
@@ -701,24 +696,24 @@ class CoinsnapGivewpClass extends PaymentGateway {
         }
         
         catch (\Throwable $e) {
-            wp_die('Internal server error', '', ['response' => 500]);
+            wp_die('Internal server error ('.esc_html($e).')', '', ['response' => 500]);
         }        
     }
 
-    public function get_payment_provider() {
+    public function getPaymentProvider() {
         return (give_get_option( 'coinsnap_provider') === 'btcpay')? 'btcpay' : 'coinsnap';
     }
-    public function get_webhook_url() {
+    public function getWebhookUrl() {
         return esc_url_raw( add_query_arg( array( 'give-listener' => 'coinsnap' ), home_url( 'index.php' ) ) );
     }
     public function getApiKey() {
-        return ($this->get_payment_provider() === 'btcpay')? give_get_option( 'btcpay_api_key') : give_get_option( 'coinsnap_api_key');
+        return ($this->getPaymentProvider() === 'btcpay')? give_get_option( 'btcpay_api_key') : give_get_option( 'coinsnap_api_key');
     }
     public function getStoreId() {
-        return ($this->get_payment_provider() === 'btcpay')? give_get_option( 'btcpay_store_id') : give_get_option( 'coinsnap_store_id');
+        return ($this->getPaymentProvider() === 'btcpay')? give_get_option( 'btcpay_store_id') : give_get_option( 'coinsnap_store_id');
     }
     public function getApiUrl() {
-        return ($this->get_payment_provider() === 'btcpay')? give_get_option( 'btcpay_server_url') : COINSNAP_GIVEWP_SERVER_URL;
+        return ($this->getPaymentProvider() === 'btcpay')? give_get_option( 'btcpay_server_url') : COINSNAP_GIVEWP_SERVER_URL;
     }	
     
     public function webhookExists(string $apiUrl, string $apiKey, string $storeId): bool {
@@ -739,7 +734,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
         try {
             $storeWebhooks = $whClient->getWebhooks( $storeId );
             foreach($storeWebhooks as $webhook){
-                if(strpos( $webhook->getData()['url'], $this->get_webhook_url() ) !== false){
+                if(strpos( $webhook->getData()['url'], $this->getWebhookUrl() ) !== false){
                     $whClient->deleteWebhook( $storeId, $webhook->getData()['id'] );
                 }
             }
@@ -756,10 +751,10 @@ class CoinsnapGivewpClass extends PaymentGateway {
     public function registerWebhook(string $apiUrl, $apiKey, $storeId){
         try {
             $whClient = new Webhook( $apiUrl, $apiKey );
-            $webhook_events = ($this->get_payment_provider() === 'btcpay')? self::BTCPAY_WEBHOOK_EVENTS : self::COINSNAP_WEBHOOK_EVENTS;
+            $webhook_events = ($this->getPaymentProvider() === 'btcpay')? self::BTCPAY_WEBHOOK_EVENTS : self::COINSNAP_WEBHOOK_EVENTS;
             $webhook = $whClient->createWebhook(
                 $storeId,   //$storeId
-		$this->get_webhook_url(), //$url
+		$this->getWebhookUrl(), //$url
 		$webhook_events,   //$specificEvents
 		null    //$secret
             );
