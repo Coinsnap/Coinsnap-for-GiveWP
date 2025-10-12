@@ -405,7 +405,12 @@ class CoinsnapGivewpClass extends PaymentGateway {
                     'type' => 'checkbox',
                     'default' => 'on',
                 );
-                
+                $settings[] = array(
+                    'id'   => 'coinsnap_returnurl',
+                    'name' => __( 'Return URL after payment', 'coinsnap-for-givewp' ),
+                    'desc' => __( 'Custom return URL after successful payment (default URL if blank)', 'coinsnap-for-givewp' ),
+                    'type' => 'text',
+                );
 		$settings[] = array(
                     'id' => 'cnp_give_title',
                     'type' => 'sectionend',
@@ -455,13 +460,13 @@ class CoinsnapGivewpClass extends PaymentGateway {
         
         if (! $this->webhookExists($this->getApiUrl(),$this->getApiKey(),$this->getStoreId())){
             if (! $this->registerWebhook($this->getApiUrl(),$this->getApiKey(),$this->getStoreId())) {                
-                throw new PaymentGatewayException(esc_html__('Unable to register Webhook for StoreID ', 'coinsnap-for-givewp').$this->getStoreId());
+                throw new PaymentGatewayException(esc_html(__('Unable to register Webhook for StoreID ', 'coinsnap-for-givewp').$this->getStoreId()));
             }
         }
 				
         $amount =  round(($donation->amount->getAmount() / 100), 2);
         $currency = $donation->amount->getCurrency()->getCode();
-        $redirectUrl = esc_url_raw(give_get_success_page_uri());
+        $redirectUrl = (!empty(give_get_option('coinsnap_returnurl')))? give_get_option('coinsnap_returnurl') : esc_url_raw(give_get_success_page_uri());
         
         $buyerEmail = $donation->email;				
         $buyerName = $donation->firstName . ' ' .$donation->lastName;
@@ -517,14 +522,15 @@ class CoinsnapGivewpClass extends PaymentGateway {
                 $metadata['orderId'] = $donation->id;
             }
             
-            $camount = \Coinsnap\Util\PreciseNumber::parseFloat($amount,2);
-            
-            // Handle Sats-mode because BTCPay does not understand SAT as a currency we need to change to BTC and adjust the amount.
-            if ($currency === 'SATS' && $_provider === 'btcpay') {
-                $currency = 'BTC';
-                $amountBTC = bcdiv($camount->__toString(), '100000000', 8);
-                $camount = \Coinsnap\Util\PreciseNumber::parseString($amountBTC);
-            }
+            // Handle currencies non-supported by BTCPay Server, we need to change them BTC and adjust the amount.
+                if (($currency === 'SATS' || $currency === 'RUB') && get_option('coinsnap_provider') === 'btcpay') {
+                    $currency = 'BTC';
+                    $rate = 1/$checkInvoice['rate'];
+                    $amountBTC = bcdiv(strval($amount), strval($rate), 8);
+                    $amount = (float)$amountBTC;
+                }
+                
+            $camount = ($currency === 'BTC')? \Coinsnap\Util\PreciseNumber::parseFloat($amount,8) : \Coinsnap\Util\PreciseNumber::parseFloat($amount,2);
 
             $redirectAutomatically = give_get_option( 'coinsnap_autoredirect');
             $walletMessage = '';
