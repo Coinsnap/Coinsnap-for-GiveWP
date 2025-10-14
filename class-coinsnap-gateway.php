@@ -465,7 +465,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
         }
 				
         $amount =  round(($donation->amount->getAmount() / 100), 2);
-        $currency = $donation->amount->getCurrency()->getCode();
+        $currency = strtoupper($donation->amount->getCurrency()->getCode());
         $redirectUrl = (!empty(give_get_option('coinsnap_returnurl')))? give_get_option('coinsnap_returnurl') : esc_url_raw(give_get_success_page_uri());
         
         $buyerEmail = $donation->email;				
@@ -497,10 +497,10 @@ class CoinsnapGivewpClass extends PaymentGateway {
                 }
 
                 if($storePaymentMethods['result']['onchain'] && !$storePaymentMethods['result']['lightning']){
-                    $checkInvoice = $client->checkPaymentData((float)$amount,strtoupper( $currency ),'bitcoin');
+                    $checkInvoice = $client->checkPaymentData((float)$amount, $currency ,'bitcoin');
                 }
                 elseif($storePaymentMethods['result']['lightning']){
-                    $checkInvoice = $client->checkPaymentData((float)$amount,strtoupper( $currency ),'lightning');
+                    $checkInvoice = $client->checkPaymentData((float)$amount, $currency ,'lightning');
                 }
                 else {
                     $errorMessage = __( 'No payment method is configured on BTCPay server', 'coinsnap-for-givewp' );
@@ -513,7 +513,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
             }
         }
         else {
-            $checkInvoice = $client->checkPaymentData((float)$amount,strtoupper( $currency ));
+            $checkInvoice = $client->checkPaymentData((float)$amount, $currency );
         }
                 
         if($checkInvoice['result'] === true){
@@ -522,13 +522,27 @@ class CoinsnapGivewpClass extends PaymentGateway {
                 $metadata['orderId'] = $donation->id;
             }
             
-            // Handle currencies non-supported by BTCPay Server, we need to change them BTC and adjust the amount.
-                if (($currency === 'SATS' || $currency === 'RUB') && get_option('coinsnap_provider') === 'btcpay') {
-                    $currency = 'BTC';
-                    $rate = 1/$checkInvoice['rate'];
-                    $amountBTC = bcdiv(strval($amount), strval($rate), 8);
-                    $amount = (float)$amountBTC;
+            if($this->getPaymentProvider() === 'btcpay' && $currency !== 'BTC'){
+                $store = new \Coinsnap\Client\Store($this->getApiUrl(), $this->getApiKey());
+                $btcpayCurrencies = $store -> getStoreCurrenciesRates($this->getStoreId(),array($currency));
+                $isCurrency = true;
+                if(!isset($btcpayCurrencies['result']['error']) && count($btcpayCurrencies['result']['currencies'])>0){
+                        if(!isset($btcpayCurrencies['result']['currencies']['BTC_'.$currency])){
+                            $isCurrency = false;
+                        }
                 }
+                else {
+                    $isCurrency = false;
+                }
+                    
+                // Handle currencies non-supported by BTCPay Server, we need to change them BTC and adjust the amount.
+                if( !$isCurrency ){
+                        $currency = 'BTC';
+                        $rate = 1/$checkInvoice['rate'];
+                        $amountBTC = bcdiv(strval($amount), strval($rate), 8);
+                        $amount = (float)$amountBTC;
+                }
+            }
                 
             $camount = ($currency === 'BTC')? \Coinsnap\Util\PreciseNumber::parseFloat($amount,8) : \Coinsnap\Util\PreciseNumber::parseFloat($amount,2);
 
