@@ -4,9 +4,9 @@
 * Contributors: coinsnap
 * Tags: Lightning, Lightning Payment, SATS, Satoshi sats, bitcoin, Wordpress, GiveWP, accept bitcoin, bitcoin plugin, bitcoin payment processor, bitcoin e-commerce, Lightning Network, cryptocurrency, lightning payment processor
 * Requires at least: 5.2
-* Tested up to: 6.8
+* Tested up to: 6.9
 * Requires PHP: 7.4
-* Stable tag: 1.4.2
+* Stable tag: 1.4.3
 * License: GPL2
 * License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,7 +28,7 @@ Coinsnap’s Bitcoin payment plugin for GiveWP makes it amazingly simple for you
 ## Accept Bitcoin payments with GiveWP in only 3 steps: ##
 
 * Get your [free Coinsnap account](https://app.coinsnap.io/register) with just your email
-* Install, activate and configure the plugin in your WordPress backend ([see the installation guide](https://coinsnap.io/coinsnap-for-givewp-installation-guide/))
+* Install, activate and configure the plugin in your WordPress backend ([see the installation guide](https://coinsnap.io/modules/givewp/givewp-installation-guide/))
 * Create donation or fundraising forms in GiveWP, place them at the appropriate places on your WordPress website and accept Bitcoin contributions from your global supporters and donors
 
 
@@ -64,16 +64,16 @@ Coinsnap’s Bitcoin payment plugin for GiveWP makes it amazingly simple for you
 ## More information: ##
 
 * GiveWP Coinsnap Demo Donation Page: [https://givewp.coinsnap.org/](https://givewp.coinsnap.org/)
-* Blog Article: [https://coinsnap.io/coinsnap-for-givewp-payment-plugin/](https://coinsnap.io/coinsnap-for-givewp-payment-plugin/)
+* Blog Article: [https://coinsnap.io/modules/givewp/](https://coinsnap.io/modules/givewp/)
 * WordPress: [https://wordpress.org/plugins/coinsnap-for-givewp/](https://wordpress.org/plugins/coinsnap-for-givewp/)
 * GitHub: [https://github.com/Coinsnap/Coinsnap-for-GiveWP](https://github.com/Coinsnap/Coinsnap-for-GiveWP)
 
 ## Documentation: ##
 
 * [Coinsnap API (1.0) documentation](https://docs.coinsnap.io/)
-* [Frequently Asked Questions](https://coinsnap.io/faq/) 
-* [Terms and Conditions](https://coinsnap.io/general-terms-and-conditions/)
-* [Privacy Policy](https://coinsnap.io/privacy/)
+* [Frequently Asked Questions](https://coinsnap.io/help/coinsnap-faq/) 
+* [Terms and Conditions](https://coinsnap.io/info/general-terms-and-conditions/)
+* [Privacy Policy](https://coinsnap.io/info/privacy-policy/)
 
 
 # Installation #
@@ -191,3 +191,7 @@ From here on you can follow 1.1 to 1.3 and you will be set to sell for Bitcoin i
 ##### 1.4.2 :: 2025-10-12
 * Update: Added non-supported by BTCPay server currencies handler on invoice request flow.
 * Update: Added custom redirect after payment page in module settings.
+
+##### 1.4.3 :: 2025-12-04
+* Compatibility with Wordpress 6.9 is tested.
+* Compatibility with GiveWP 4.13.1 is tested.
