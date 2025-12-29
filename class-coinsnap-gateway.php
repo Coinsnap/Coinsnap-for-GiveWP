@@ -71,6 +71,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
                 $messageAbort = __('Error on verifiying redirected API Key with stored BTCPay Server url. Aborting API wizard. Please try again or continue with manual setup.', 'coinsnap-for-givewp');
                 $notice->addNotice('error', $messageAbort);
                 wp_redirect($CoinsnapBTCPaySettingsUrl);
+                exit();
             }
 
             // Data does get submitted with url-encoded payload, so parse $_POST here.
@@ -119,6 +120,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
 
             $notice->addNotice('error', __('Error processing the data from Coinsnap. Please try again.', 'coinsnap-for-givewp'));
             wp_redirect($CoinsnapBTCPaySettingsUrl);
+            exit();
         });
         
         parent::__construct($subscriptionModule);
@@ -567,6 +569,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
                 $payurl = $csinvoice->getData()['checkoutLink'] ;	
                 
                 wp_redirect($payurl);
+                exit();
             }
             catch (\Throwable $e){
                 $errorMessage = __( 'API connection is not established', 'coinsnap-for-givewp' );
