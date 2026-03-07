@@ -1,18 +1,18 @@
 <?php
 /*
  * Plugin Name:     Bitcoin payment for GiveWP 
- * Plugin URI:      https://coinsnap.io/coinsnap-for-givewp-payment-plugin/
+ * Plugin URI:      https://coinsnap.io/wp-add-ons/givewp/
  * Description:     Receive Bitcoin donations or Bitcoin contributions for your fundraisers. Easy setup, fast & simple transactions.
  * Author:          Coinsnap
  * Author URI:      https://coinsnap.io/
  * Text Domain:     coinsnap-for-givewp
  * Domain Path:     /languages
- * Version:         1.4.4
+ * Version:         1.4.5
  * Requires PHP:    7.4
  * Requires at least: 6.0
  * Tested up to:    6.9
  * Requires Plugins: give
- * GiveWP tested up to: 4.13.2
+ * GiveWP tested up to: 4.14.2
  * License:         GPL2
  * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -24,7 +24,7 @@ if (!defined( 'ABSPATH' )){
 }
 
 if(!defined('COINSNAP_GIVEWP_PHP_VERSION')){ define( 'COINSNAP_GIVEWP_PHP_VERSION', '7.4' );}
-if(!defined('COINSNAP_GIVEWP_VERSION')){ define( 'COINSNAP_GIVEWP_VERSION', '1.4.4' );}
+if(!defined('COINSNAP_GIVEWP_VERSION')){ define( 'COINSNAP_GIVEWP_VERSION', '1.4.5' );}
 if(!defined('COINSNAP_GIVEWP_REFERRAL_CODE')){ define( 'COINSNAP_GIVEWP_REFERRAL_CODE', 'D19825' );}
 if(!defined('COINSNAP_GIVEWP_PLUGIN_ID')){ define( 'COINSNAP_GIVEWP_PLUGIN_ID', 'coinsnap-for-givewp' );}
 if(!defined('COINSNAP_GIVEWP_SERVER_URL')){ define( 'COINSNAP_GIVEWP_SERVER_URL', 'https://app.coinsnap.io' );}
