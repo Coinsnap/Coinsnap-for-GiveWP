@@ -3,10 +3,8 @@
 
 * Contributors: coinsnap
 * Tags: Lightning, Lightning Payment, SATS, Satoshi sats, bitcoin, Wordpress, GiveWP, accept bitcoin, bitcoin plugin, bitcoin payment processor, bitcoin e-commerce, Lightning Network, cryptocurrency, lightning payment processor
-* Requires at least: 5.2
 * Tested up to: 6.9
-* Requires PHP: 7.4
-* Stable tag: 1.4.3
+* Stable tag: 1.4.5
 * License: GPL2
 * License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -195,3 +193,12 @@ From here on you can follow 1.1 to 1.3 and you will be set to sell for Bitcoin i
 ##### 1.4.3 :: 2025-12-04
 * Compatibility with Wordpress 6.9 is tested.
 * Compatibility with GiveWP 4.13.1 is tested.
+
+##### 1.4.4 :: 2025-12-28
+* Compatibility with GiveWP 4.13.2 is tested.
+* Updated PHP files protection.
+* Updated dependency functions naming.
+
+##### 1.4.5 :: 2026-03-06
+* Updated plugin description.
+* Compatibility with GiveWP 4.14.0 - 4.14.2 is tested.
