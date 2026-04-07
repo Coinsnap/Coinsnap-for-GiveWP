@@ -3,7 +3,7 @@
 Contributors: coinsnap
 Tags: Lightning, SATS, bitcoin, GiveWP, payment gateway
 Tested up to: 6.9
-Stable tag: 1.4.5
+Stable tag: 1.4.6
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -217,4 +217,9 @@ See the FAQ on [https://coinsnap.io/coinsnap-for-givewp-installation-guide/](htt
 * Updated plugin description.
 * Compatibility with GiveWP 4.14.0 - 4.14.2 is tested.
 
+= 1.4.6 :: 2026-04-07 =
+* Updated \Coinsnap\Client\Invoice class.
+* Updated \Coinsnap\Client\Store class.
+* Compatibility with GiveWP 4.14.4 is tested.
+* Compatibility with Wordpress 6.9.4 is tested.
 
