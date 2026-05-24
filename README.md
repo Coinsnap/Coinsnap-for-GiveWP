@@ -3,8 +3,8 @@
 
 * Contributors: coinsnap
 * Tags: Lightning, Lightning Payment, SATS, Satoshi sats, bitcoin, Wordpress, GiveWP, accept bitcoin, bitcoin plugin, bitcoin payment processor, bitcoin e-commerce, Lightning Network, cryptocurrency, lightning payment processor
-* Tested up to: 6.9
-* Stable tag: 1.4.6
+* Tested up to: 7.0
+* Stable tag: 1.4.7
 * License: GPL2
 * License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,8 +25,8 @@ Coinsnap’s Bitcoin payment plugin for GiveWP makes it amazingly simple for you
 
 ## Accept Bitcoin payments with GiveWP in only 3 steps: ##
 
-* Get your [free Coinsnap account](https://app.coinsnap.io/register) with just your email
-* Install, activate and configure the plugin in your WordPress backend ([see the installation guide](https://coinsnap.io/modules/givewp/givewp-installation-guide/))
+* Get your [free Coinsnap account](https://app.coinsnap.io/) with just your email
+* Install, activate and configure the plugin in your WordPress backend ([see the installation guide](https://coinsnap.io/user-guides/givewp-bitcoin-user-guide/))
 * Create donation or fundraising forms in GiveWP, place them at the appropriate places on your WordPress website and accept Bitcoin contributions from your global supporters and donors
 
 
@@ -62,7 +62,8 @@ Coinsnap’s Bitcoin payment plugin for GiveWP makes it amazingly simple for you
 ## More information: ##
 
 * GiveWP Coinsnap Demo Donation Page: [https://givewp.coinsnap.org/](https://givewp.coinsnap.org/)
-* Blog Article: [https://coinsnap.io/modules/givewp/](https://coinsnap.io/modules/givewp/)
+* Blog Article: [https://coinsnap.io/wp-add-ons/givewp/](https://coinsnap.io/wp-add-ons/givewp/)
+* Installation Guide: [https://coinsnap.io/user-guides/givewp-bitcoin-user-guide/](https://coinsnap.io/user-guides/givewp-bitcoin-user-guide/)
 * WordPress: [https://wordpress.org/plugins/coinsnap-for-givewp/](https://wordpress.org/plugins/coinsnap-for-givewp/)
 * GitHub: [https://github.com/Coinsnap/Coinsnap-for-GiveWP](https://github.com/Coinsnap/Coinsnap-for-GiveWP)
 
@@ -70,7 +71,7 @@ Coinsnap’s Bitcoin payment plugin for GiveWP makes it amazingly simple for you
 
 * [Coinsnap API (1.0) documentation](https://docs.coinsnap.io/)
 * [Frequently Asked Questions](https://coinsnap.io/help/coinsnap-faq/) 
-* [Terms and Conditions](https://coinsnap.io/info/general-terms-and-conditions/)
+* [Terms of Service](https://coinsnap.io/info/terms-of-service/)
 * [Privacy Policy](https://coinsnap.io/info/privacy-policy/)
 
 
@@ -208,3 +209,7 @@ From here on you can follow 1.1 to 1.3 and you will be set to sell for Bitcoin i
 * Updated \Coinsnap\Client\Store class.
 * Compatibility with GiveWP 4.14.4 is tested.
 * Compatibility with Wordpress 6.9.4 is tested.
+
+##### 1.4.7 :: 2026-05-24
+* Compatibility with GiveWP 4.15.2 is tested.
+* Compatibility with Wordpress 7.0 is tested.
