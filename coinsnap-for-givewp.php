@@ -33,6 +33,12 @@ if(!defined('COINSNAP_CURRENCIES')){define( 'COINSNAP_CURRENCIES', array("EUR","
 if(!defined('COINSNAP_API_PATH')){define( 'COINSNAP_API_PATH', '/api/v1/');}
 if(!defined('COINSNAP_SERVER_PATH')){define( 'COINSNAP_SERVER_PATH', 'stores' );}
 
+require_once __DIR__ . '/class-coinsnap-givewp-security.php';
+
+// Invoice records table: created on activation, and on the first load after an update.
+register_activation_hook(__FILE__, ['Coinsnap_GiveWP_Security', 'install']);
+add_action('plugins_loaded', ['Coinsnap_GiveWP_Security', 'install']);
+
 // Register the gateways 
 
 add_action('givewp_register_payment_gateway', static function ($paymentGatewayRegister) {
@@ -66,8 +72,9 @@ add_action('init', function() {
 // To be able to use the endpoint without appended url segments we need to do this.
 add_filter('request', function($vars) {
     if (isset($vars['coinsnap-for-givewp-btcpay-settings-callback'])) {
+        // The proof is the one-time state created when the admin clicked "Generate API key",
+        // never a nonce created in this request.
         $vars['coinsnap-for-givewp-btcpay-settings-callback'] = true;
-        $vars['coinsnap-for-givewp-btcpay-nonce'] = wp_create_nonce('coinsnapgive-btcpay-nonce');
     }
     return $vars;
 });
