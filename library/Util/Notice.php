@@ -10,27 +10,28 @@ class Notice {
    
     public function addNotice(string $type, string $content, $dismissible = 1){
         $notice_types_array = ['error','warning','success','info'];
-        if(in_array($type,$notice_types_array)){ $type = 'info'; }
+        if(!in_array($type,$notice_types_array,true)){ $type = 'info'; }
         if(!empty($content)){
             setcookie('coinsnap_notices['.hash('sha256',$content).']',wp_json_encode(['type' => $type,'message' => $content, 'dismissible' => $dismissible]),time()+5,'/');
         }
     }
     
     public function showNotices(){
-        if(isset($_COOKIE['coinsnap_notices'])){ 
-            $coinsnap_notices_array = array_map('sanitize_text_field', wp_unslash($_COOKIE['coinsnap_notices']));
-        
-            if(count($coinsnap_notices_array)>0){
-                foreach($coinsnap_notices_array as $coinsnap_notice){
-                    // JSON, never unserialize(): the cookie is set by the browser.
-                    $notice = json_decode((string) $coinsnap_notice, true);
-                    if (!is_array($notice) || !is_string($notice['type'] ?? null) || !is_string($notice['message'] ?? null)) {
-                        continue;
-                    }
-                    $dismissible_add = ($notice['dismissible'])? ' is-dismissible' : '';
-                    echo '<div class="notice notice-'.esc_html($notice['type'].$dismissible_add).'"><p>'.esc_html($notice['message']).'</p></div>';
-                }
+        // The cookie is written by the browser: anything but an array of JSON strings is ignored (6.1).
+        if(!isset($_COOKIE['coinsnap_notices']) || !is_array($_COOKIE['coinsnap_notices'])){
+            return;
+        }
+        foreach(wp_unslash($_COOKIE['coinsnap_notices']) as $coinsnap_notice){
+            if(!is_string($coinsnap_notice)){
+                continue;
             }
+            // JSON, never unserialize().
+            $notice = json_decode(sanitize_text_field($coinsnap_notice), true);
+            if (!is_array($notice) || !is_string($notice['type'] ?? null) || !is_string($notice['message'] ?? null)) {
+                continue;
+            }
+            $dismissible_add = !empty($notice['dismissible']) ? ' is-dismissible' : '';
+            echo '<div class="notice notice-'.esc_html($notice['type'].$dismissible_add).'"><p>'.esc_html($notice['message']).'</p></div>';
         }
     }
 }
