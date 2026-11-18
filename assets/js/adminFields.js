@@ -14,13 +14,13 @@ jQuery(document).ready(function ($) {
             $('.btcpay').closest('tr').hide();
             $('.btcpay').removeAttr('required');
             $('.coinsnap').closest('tr').show();
-            $('.coinsnap').attr('required','required');
+            $('.coinsnap').not('[data-coinsnap-has-value]').attr('required','required');
         }
         else {
             $('.coinsnap').closest('tr').hide();
             $('.coinsnap').removeAttr('required');
             $('.btcpay').closest('tr').show();
-            $('.btcpay').attr('required','required');
+            $('.btcpay').not('[data-coinsnap-has-value]').attr('required','required');
         }
     }
     
@@ -32,7 +32,6 @@ jQuery(document).ready(function ($) {
             }
 	}
         catch (e) {
-            console.error(e);
             return false;
 	}
         return true;
