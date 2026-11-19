@@ -551,9 +551,8 @@ class CoinsnapGivewpClass extends PaymentGateway {
         $buyerEmail = $donation->email;				
         $buyerName = $donation->firstName . ' ' .$donation->lastName;
 
-        $metadata = [];
-        $metadata['orderNumber'] = $donation->id;
-        $metadata['customerName'] = $buyerName;
+        // Donation data and the donor's details. The plugin has no setting for customer data, so they are always sent.
+        $metadata = $this->invoiceMetadata($donation);
         
         $client = new \Coinsnap\Client\Invoice($this->getApiUrl(), $this->getApiKey());
         
@@ -597,10 +596,6 @@ class CoinsnapGivewpClass extends PaymentGateway {
         }
                 
         if($checkInvoice['result'] === true){
-            
-            if($this->getPaymentProvider() === 'btcpay') {
-                $metadata['orderId'] = $donation->id;
-            }
             
             if($this->getPaymentProvider() === 'btcpay' && $currency !== 'BTC'){
                 $store = new \Coinsnap\Client\Store($this->getApiUrl(), $this->getApiKey());
@@ -676,6 +671,79 @@ class CoinsnapGivewpClass extends PaymentGateway {
         }
         
         exit;
+    }
+
+    // Invoice metadata. orderId and orderNumber stay the donation ID: the webhook checks the API invoice's
+    // orderId (Coinsnap, falling back to metadata.orderNumber) or metadata.orderId (BTCPay) against the recorded donation.
+    private function invoiceMetadata(Donation $donation): array {
+        $id = (int) $donation->id;
+        // Older GiveWP versions lack some properties (the model throws on unknown ones).
+        $get = function (string $key) use ($donation) {
+            try {
+                return $donation->$key;
+            } catch (\Throwable $e) {
+                return null;
+            }
+        };
+        $name = trim($get('firstName') . ' ' . $get('lastName'));
+        $formTitle = wp_strip_all_tags((string) $get('formTitle'));
+        $total = round($donation->amount->getAmount() / 100, 2);
+        $address = $get('billingAddress');
+
+        $donationNumber = function_exists('give_get_payment_number') ? (string) give_get_payment_number($id) : '';
+        $campaign = $get('campaignId') ? $get('campaign') : null;
+        $campaignTitle = ($campaign && isset($campaign->title)) ? wp_strip_all_tags((string) $campaign->title) : '';
+        $type = $get('type');
+        $type = (is_object($type) && method_exists($type, 'getValue')) ? (string) $type->getValue() : '';
+        $mode = $get('mode');
+        $mode = (is_object($mode) && method_exists($mode, 'getValue')) ? (string) $mode->getValue() : '';
+
+        return self::withoutEmptyValues([
+            'orderId' => (string) $id,
+            'orderNumber' => (string) $id,
+            'donationNumber' => ($donationNumber !== '' && $donationNumber !== (string) $id) ? $donationNumber : '',
+            'orderUrl' => admin_url('edit.php?post_type=give_forms&page=give-payment-history&view=view-payment-details&id=' . $id),
+            'customerName' => $name,
+            'buyerName' => $name,
+            'buyerEmail' => (string) $get('email'),
+            'buyerPhone' => (string) $get('phone'),
+            'buyerCompany' => (string) $get('company'),
+            'buyerAddress1' => $address ? (string) $address->address1 : '',
+            'buyerAddress2' => $address ? (string) $address->address2 : '',
+            'buyerCity' => $address ? (string) $address->city : '',
+            'buyerState' => $address ? (string) $address->state : '',
+            'buyerZip' => $address ? (string) $address->zip : '',
+            'buyerCountry' => $address ? (string) $address->country : '',
+            'buyerMessage' => (string) $get('comment'),
+            'itemDesc' => $formTitle !== '' ? sprintf('Donation: %s', $formTitle) : '',
+            'itemCode' => $get('formId') ? (string) $get('formId') : '',
+            'lineItems' => [self::withoutEmptyValues([
+                'name' => $formTitle,
+                'productId' => $get('formId') ? (int) $get('formId') : null,
+                'quantity' => 1,
+                'price' => $total,
+                'total' => $total,
+            ])],
+            'formId' => $get('formId') ? (int) $get('formId') : null,
+            'formTitle' => $formTitle,
+            'campaignId' => $get('campaignId') ? (int) $get('campaignId') : null,
+            'campaignTitle' => $campaignTitle,
+            'levelId' => (string) $get('levelId'),
+            'donationType' => $type,
+            'subscriptionId' => $get('subscriptionId') ? (int) $get('subscriptionId') : null,
+            'anonymous' => $get('anonymous') ? true : null,
+            'testMode' => $mode === 'test' ? true : null,
+            'platform' => 'givewp',
+            'pluginVersion' => COINSNAP_GIVEWP_VERSION,
+            'language' => function_exists('determine_locale') ? determine_locale() : get_locale(),
+        ]);
+    }
+
+    // Drops null, '' and [] so the invoice carries only values that exist.
+    private static function withoutEmptyValues(array $values): array {
+        return array_filter($values, function ($value) {
+            return $value !== null && $value !== '' && $value !== [];
+        });
     }
 
     /**
