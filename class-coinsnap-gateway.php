@@ -525,6 +525,27 @@ class CoinsnapGivewpClass extends PaymentGateway {
 	}
 
 	/**
+	 * Visual builder (v3) forms list only gateways that register a script. No card fields:
+	 * the donor pays on the Coinsnap or BTCPay payment page.
+	 */
+	public function enqueueScript(int $formId) {
+            wp_enqueue_script(
+                'coinsnap-for-givewp-gateway',
+                plugins_url('assets/js/givewpGateway.js', __FILE__),
+                ['react'],
+                COINSNAP_GIVEWP_VERSION,
+                true
+            );
+	}
+
+	/** Passed to the v3 gateway script as this.settings. */
+	public function formSettings(int $formId): array {
+            return [
+                'description' => (string) give_get_option('coinsnap_desc'),
+            ];
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function getLegacyFormFieldMarkup(int $formId, array $args): string {		
@@ -544,7 +565,8 @@ class CoinsnapGivewpClass extends PaymentGateway {
             throw new PaymentGatewayException(esc_html__('Bitcoin payments are not available at the moment. Please try again later.', 'coinsnap-for-givewp'));
         }
 				
-        $amount =  round(($donation->amount->getAmount() / 100), 2);
+        // In the currency's own units: JPY and SATS have no decimals, so the minor amount is not cents.
+        $amount = (float) $donation->amount->formatToDecimal();
         $currency = strtoupper($donation->amount->getCurrency()->getCode());
         $redirectUrl = (!empty(give_get_option('coinsnap_returnurl')))? give_get_option('coinsnap_returnurl') : esc_url_raw(give_get_success_page_uri());
         
@@ -647,8 +669,8 @@ class CoinsnapGivewpClass extends PaymentGateway {
                     throw new \RuntimeException('invoice not recorded');
                 }
                 
-                wp_redirect($payurl);
-                exit();
+                // A command, not a redirect: v3 (visual builder) forms expect it as JSON, v2 forms get a redirect.
+                return new RedirectOffsite($payurl);
             }
             catch (\Throwable $e){
                 $errorMessage = __( 'API connection is not established', 'coinsnap-for-givewp' );
@@ -687,7 +709,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
         };
         $name = trim($get('firstName') . ' ' . $get('lastName'));
         $formTitle = wp_strip_all_tags((string) $get('formTitle'));
-        $total = round($donation->amount->getAmount() / 100, 2);
+        $total = (float) $donation->amount->formatToDecimal();
         $address = $get('billingAddress');
 
         $donationNumber = function_exists('give_get_payment_number') ? (string) give_get_payment_number($id) : '';
@@ -891,7 +913,7 @@ class CoinsnapGivewpClass extends PaymentGateway {
             return null;
         }
         $currency = strtoupper($donation->amount->getCurrency()->getCode());
-        $amount = number_format($donation->amount->getAmount() / 100, 2, '.', '');
+        $amount = (string) $donation->amount->formatToDecimal();
         if (strtoupper((string) ($invoice['currency'] ?? '')) !== $currency) {
             return null;
         }
